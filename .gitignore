@@ -1,0 +1,13 @@
+/Scooter_Narcotics/nbproject/private/
+/Scooter_Narcotics/build/
+/Scooter_Narcotics/dist/
+/Scooter_Admin/nbproject/private/
+/Scooter_Admin/build/
+/Scooter_Admin/dist/
+/ScooterEmailer/nbproject/
+/ScooterEmailer/nbproject/private/
+/ScooterEmailer/build/
+/ScooterEmailer/dist/
+*.war
+*.class
+*.class

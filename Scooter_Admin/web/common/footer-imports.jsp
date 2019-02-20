@@ -1,0 +1,16 @@
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/dataTables.bootstrap.min.js"></script>
+<script src="js/fastclick.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/remodal.js"></script>
+<script src="js/loading.js"></script>
+<script src="js/jquery.toast.min.js"></script>
+<script src="js/jquery.toast.js"></script>
+<script src="js/jquery-jvectormap-1.2.2.min.js"></script>
+<script src="js/jquery-jvectormap-world-mill-en.js"></script>
+<script src="js/texttranslator.js"></script>
+<script src="js/exchangerate.js"></script>
+<script src="js/weightconversion.js"></script>
+<script src="js/main.js"></script>
