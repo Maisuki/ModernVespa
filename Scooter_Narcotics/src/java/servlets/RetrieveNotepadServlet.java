@@ -22,11 +22,13 @@ public class RetrieveNotepadServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String referer = request.getHeader("Referer") == null ? (String)request.getAttribute("Referer") : request.getHeader("Referer");
-
+        
         if (referer == null) {
             response.getWriter().println("Unauthorized access!");
             return;
         }
+        
+        System.out.println(referer);
         
         if (!RefererCheckManager.refererCheck(referer, "account.jsp", "personalinfo.jsp", "orders.jsp", "view-notepad.jsp")) {
             response.getWriter().println("Unauthorized access!");

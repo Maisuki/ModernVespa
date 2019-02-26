@@ -17,6 +17,7 @@
     String pageName = "";
     String titleName = "Account Dashboard";
     String breadCrumbName = "My Profile - Notepad";
+    String requestUrl = request.getRequestURL().toString();
 %>
 <!DOCTYPE html>
 <html>
@@ -56,13 +57,11 @@
                                 </div>
 
                                 <%
-                                    String requestUri = request.getRequestURI();
-                                    String requestUrl = request.getRequestURL().toString();
-//                                    String[] splittedUri = requestUrl.split("/");
+                                    String[] splittedUri = requestUrl.split("/");
                                     if (application.getAttribute("activenps") == null) {
-//                                        System.out.println(splittedUri[splittedUri.length - 1]);
-                                        request.setAttribute("Referer", requestUrl);
-                                        request.getRequestDispatcher("retrieveNp").forward(request, response);
+                                        out.println("<script>");
+                                        out.println("location.href='retrieveNp';");
+                                        out.println("</script>");
                                         return;
                                     }
                                     JsonArray activenps = (JsonArray) application.getAttribute("activenps");
