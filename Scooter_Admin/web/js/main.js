@@ -1780,15 +1780,16 @@ var sn = {
         var self = this;
         var result = await self.retrieveWsData('POST', 'retrieveAllTransactions', {});
         if (result.status) {
+            console.log(result);
             var transactions = result.transactions;
-            for (var i = 0; i < data.transactions.length; i++) {
-                var transaction = data.transactions[i];
+            for (var i = 0; i < transactions.length; i++) {
+                var transaction = transactions[i];
+                var transactionId = transaction._id;
                 var currency = transaction.currency;
-                var transactionId = transaction._id; 
                 var date = new Date(transaction.transaction_date);
                 var transactionDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-                var shippingDetails = transaction.shippingDetails;
-                var CustName = shippingDetails.name;
+                var shippingDetails = JSON.parse(transaction.shippingDetails);
+                var custName = shippingDetails.name;
                 var cart = transaction.cart;
                 var transactionAmt = 0;
                 var status = "";
@@ -1803,7 +1804,7 @@ var sn = {
                 info += "<td>" + transactionId + "</td>";
                 info += "<td>" + transactionDate + "</td>";
                 info += "<td>" + currency + " " + transactionAmt + "</td>";
-                info += "<td>" + CustName + "</td>";
+                info += "<td>" + custName + "</td>";
                 info += "<td>" + status + "</td>";
                 info += "<td><center><a href='transaction.jsp?cartId=" + transaction.cartId + "&clientId=" + transaction.clientId + "' class=\"btn btn-default\">View More..</a></center></td>";
                 info += "</tr>";

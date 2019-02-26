@@ -32,6 +32,7 @@
                                                 <th>Total Price</th>
                                                 <th>Customer</th>
                                                 <th>Status</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody id="tranList"></tbody>
