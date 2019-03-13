@@ -57,17 +57,11 @@ public class Login2Servlet extends HttpServlet {
 
         if (!status) {
             String message = obj.get("message").getAsString();
-
-            RequestDispatcher view = request.getRequestDispatcher(referer);
+            RequestDispatcher view = request.getRequestDispatcher(referer.split("/")[referer.split("/").length - 1]);
             request.setAttribute("username", username);
             request.setAttribute("password", password);
             request.setAttribute("message", message);
             view.forward(request, response);
-
-//            JsonObject errObj = new JsonObject();
-//            errObj.addProperty("status", false);
-//            errObj.addProperty("message", message);
-//            response.getWriter().println(new Gson().toJson(errObj));
         }
         else {
             JsonObject userObj = obj.get("user").getAsJsonObject();
@@ -89,12 +83,18 @@ public class Login2Servlet extends HttpServlet {
                 session.setAttribute("tier", userObj.get("tierNo").getAsString());
             }
 
-            String refererParam = referer.split("\\?")[1];
             String page;
             if (referer.contains("activate")) {
                 response.sendRedirect("login.jsp");
                 return;
             }
+            
+            if (referer.contains("login.jsp") || referer.contains("login2")) {
+                response.sendRedirect("index.jsp");
+                return;
+            }
+            
+            String refererParam = referer.split("\\?")[1];
             if (refererParam.contains("&")) {
                 page = refererParam.split("&")[0].split("\\=")[1];
             }
@@ -107,13 +107,6 @@ public class Login2Servlet extends HttpServlet {
             }
 
             response.sendRedirect(page);
-
-//            String message = obj.get("message").getAsString();
-
-//            JsonObject errObj = new JsonObject();
-//            errObj.addProperty("status", true);
-//            errObj.addProperty("message", message);
-//            response.getWriter().println(new Gson().toJson(errObj));
         }
     }
 }
