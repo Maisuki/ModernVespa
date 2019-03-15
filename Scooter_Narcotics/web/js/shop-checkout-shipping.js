@@ -119,7 +119,7 @@ $('.paymentmethod').change(function () {
 
 /**** PLACE ORDER ****/
 $(".WTplaceOrder").click(function () {
-    processPayment("-", "Wire Transfer", "Order submitted, oder will be process after payment is received");
+    processPayment("-", "Wire Transfer", "Order submitted, oder will be process after payment is received", undefined);
 });
 /**** PLACE ORDER ****/
 
@@ -148,7 +148,7 @@ paypal.Button.render({
     onAuthorize: function (data, actions) {
         return actions.payment.execute().then(function (payment) {
             // The payment is complete!
-            processPayment(payment.id, "PayPal", "Payment Successful");
+            processPayment(payment.id, "PayPal", "Payment Successful", undefined);
         });
     }
 }, '#paypal-button');
@@ -179,7 +179,7 @@ paypal.Button.render({
     onAuthorize: function (data, actions) {
         return actions.payment.execute().then(function (payment) {
             // The payment is complete!
-            processPayment(payment.id, "PayPal", "Payment Successful");
+            processPayment(payment.id, "PayPal", "Payment Successful", undefined);
         });
     }
 }, '#paypal-button1');
@@ -242,7 +242,8 @@ function setOutcomeDesktop(result) {
     errorMsg.classList.remove('visible');
 
     if (result.token) {
-        processPayment(result.token.id, "stripe", "Payment successful");
+        processPayment(result.token.id, "stripe", "Payment successful", $("#placeOrder"));
+//        $("#placeOrder").attr("disabled", "disabled");
     } else if (result.error) {
         errorElement.textContent = result.error.message;
         errorElement.classList.add('visible');
@@ -254,7 +255,7 @@ cardDesktop.on('change', function (event) {
 });
 
 document.querySelector('.form').addEventListener('submit', function (e) {
-    $("button[type=submit]").attr("disabled", "disabled");
+//    $("button[type=submit]").attr("disabled", "disabled");
     e.preventDefault();
     var form = document.querySelector('.form');
     var extraDetails = {
@@ -321,7 +322,8 @@ function setOutcomeMobile(result) {
     errorMsg.classList.remove('visible');
 
     if (result.token) {
-        processPayment(result.token.id, "stripe", "Payment successful");
+        processPayment(result.token.id, "stripe", "Payment successful", $("#placeOrder1"));
+//        $("#placeOrder1").attr("disabled", "disabled");
     } else if (result.error) {
         errorElement.textContent = result.error.message;
         errorElement.classList.add('visible');
@@ -333,7 +335,7 @@ cardMobile.on('change', function (event) {
 });
 
 document.querySelector('.form1').addEventListener('submit', function (e) {
-    $("button[type=submit]").attr("disabled", "disabled");
+//    $("button[type=submit]").attr("disabled", "disabled");
     e.preventDefault();
     var form = document.querySelector('.form1');
     var extraDetails = {
@@ -344,7 +346,7 @@ document.querySelector('.form1').addEventListener('submit', function (e) {
 /**** PAYMENT TYPE: STRIPE (MOBILE) ****/
 
 /**** PROCESS PAYMENT ****/
-function processPayment(id, type, msg) {
+function processPayment(id, type, msg, element) {
     $('#paymentDetails').loading({
         stoppable: false,
         message: 'Processing...',
@@ -376,7 +378,10 @@ function processPayment(id, type, msg) {
             }
 
             var data = ($.parseJSON(e.responseText));
+            console.log("data");
+            console.log(data);
             if (e.status === 200 && data.status) {
+                elem.attr("disabled", "disabled");
                 $('#paymentDetails').loading('stop');
 
                 $.toast({
@@ -396,6 +401,8 @@ function processPayment(id, type, msg) {
                         showHideTransition: 'fade',
                         icon: 'error'
                     });
+                    
+                    $('#paymentDetails').loading('stop');
                 }
             }
         },

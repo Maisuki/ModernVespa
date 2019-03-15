@@ -888,6 +888,7 @@ function loadItem() {
                         var gst = product.gst;
                         var foreignprice = product.foreignprice;
                         var localprice = product.localprice;
+                        console.log(localprice);
                         var productBrand = product.productBrand;
                         var shippingCosts = product.shippingCosts;
                         var images = product.img;
@@ -935,8 +936,10 @@ function loadItem() {
                             } else {
                                 price = parseFloat(foreignprice).toFixed(2);
                             }
+                            console.log("price > " + price);
 
                             if (role === dealer) {
+                                console.log("in");
                                 outputDesktop += "<div class='price'>";
 
                                 var initialPrice = price;

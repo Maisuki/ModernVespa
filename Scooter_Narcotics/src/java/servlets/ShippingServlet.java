@@ -87,7 +87,7 @@ public class ShippingServlet extends HttpServlet {
         request.getSession().setAttribute("cart_id", obj.getAsJsonObject("cart").get("_id").getAsString());
 
         POST_URL = Global.BASE_URL + "/verifyAvailability";
-        String POST_PARAM = "clientId=" + clientId;
+        String POST_PARAM = "clientId=" + clientId + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
         String verifyResult = SNServer.sendPOST(POST_URL, POST_PARAM);
         JsonObject verifyData = new JsonParser().parse(verifyResult).getAsJsonObject();
         JsonArray shipmentInfo = new JsonArray();

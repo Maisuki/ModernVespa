@@ -229,7 +229,8 @@ public class PaymentServlet extends HttpServlet {
             errorMsg += "Opps something went wrong please contact Adminstration.";
             System.out.println(ex.getMessage());
         } catch (CardException ex) {
-            errorMsg += "Opps something is wrong.. Please check your card details";
+//            errorMsg += "Opps something is wrong.. Please check your card details";
+            errorMsg += ex.getMessage();
             System.out.println(ex.getMessage());
         } catch (EasyPostException e) {
             JsonObject resultObj = new JsonParser().parse(e.getMessage().substring(e.getMessage().indexOf("{"))).getAsJsonObject();

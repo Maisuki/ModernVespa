@@ -96,6 +96,7 @@
                                     </div>
                                 </div>
                                 <form action="login2" method="post" class="block-cont">
+                                    <br>
                                     <font color="red">${param.message}</font>
                                     <font color="red">${message}</font>
                                     <font color="black">${successMsg}</font>

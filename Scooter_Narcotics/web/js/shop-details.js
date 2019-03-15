@@ -162,6 +162,9 @@ $(document).ready(function () {
                     basicInformationPanel += "<dd style='font-size:15px'><b>" + (((initialPrice - price) / initialPrice) * 100).toFixed(2) + "%</b></dd>";
                     basicInformationPanel += "</dl>";
                 } else {
+                    var gstval = 1 + (parseInt(product.gst)) / 100.0;
+                    var priceWGst = price * gstval;
+                    price = parseFloat(priceWGst).toFixed(2);
                     basicInformationPanel += "<dl>";
                     basicInformationPanel += "<dt>Price:</dt>";
                     basicInformationPanel += "<dd><b>" + ccode + " " + price + "</b></dd>";
@@ -380,6 +383,9 @@ $(document).ready(function () {
                             outputDesktop += "<span style='font-size:15px'>Discount: " + (((initialPrice - price) / initialPrice) * 100).toFixed(2) + "%</span>";
                             outputDesktop += "</div>";
                         } else {
+                            var gstval = 1 + (parseInt(product.gst)) / 100.0;
+                            var priceWGst = price * gstval;
+                            price = parseFloat(priceWGst).toFixed(2);
                             outputDesktop += "<div class='price'>" + ccode + " " + price + "</div>";
                         }
                         outputDesktop += "<div class='actions'>";
@@ -484,6 +490,9 @@ $(document).ready(function () {
                             outputMobile += "<span style='font-size:15px'>Discount: " + (((initialPrice - price) / initialPrice) * 100).toFixed(2) + "%</span>";
                             outputMobile += "</div>";
                         } else {
+                            var gstval = 1 + (parseInt(product.gst)) / 100.0;
+                            var priceWGst = price * gstval;
+                            price = parseFloat(priceWGst).toFixed(2);
                             outputMobile += "<div class='price'>" + ccode + " " + price + "</div>";
                         }
                         outputMobile += "<div class='actions'>";

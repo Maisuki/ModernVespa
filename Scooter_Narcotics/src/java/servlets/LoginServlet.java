@@ -93,7 +93,6 @@ public class LoginServlet extends HttpServlet {
         }
 
         String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        System.out.println(result);
         JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
         boolean status = obj.get("status").getAsBoolean();
 
