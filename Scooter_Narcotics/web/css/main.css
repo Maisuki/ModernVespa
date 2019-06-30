@@ -40,6 +40,19 @@
 #signin-button2:hover {
     cursor: pointer;
 }
+#signin-button3 {
+    display: inline-block;
+    background: white;
+    color: #444;
+    width: 68%;
+    border-radius: 5px;
+    border: thin solid #888;
+    box-shadow: 1px 1px 1px grey;
+    white-space: nowrap;
+}
+#signin-button3:hover {
+    cursor: pointer;
+}
 span.label {
     font-family: serif;
     font-weight: normal;
@@ -628,6 +641,24 @@ label.error {
         margin-left: 2%;
         width: 69.5%;
     }
+    
+    #fb {
+        margin-top: 3%;
+        width: 50%;
+    }
+    
+    #fbBtnText {
+        margin-left: 45px;
+    }
+    
+    #google {
+        margin-top: 3%;
+        width: 52%;
+    }
+    
+    #googleBtnText {
+        margin-left: 25px;
+    }
 }
 
 @media screen and (max-width: 2560px) {  /*laptop*/
@@ -718,6 +749,16 @@ label.error {
         margin-left: 16%;
         width: 99%;
     }
+    
+    #fb {
+        margin-top: 3%;
+        width: 70%;
+    }
+    
+    #google {
+        margin-top: 3%;
+        width: 73%;
+    }
 }
 
 @media screen and (max-width: 800px) {    
@@ -738,6 +779,16 @@ label.error {
         width: 98%;
         margin-left: -2px;
     }
+    
+    #fb {
+        margin-top: 3%;
+        width: 85%;
+    }
+    
+    #google {
+        margin-top: 3%;
+        width: 90%;
+    }
 }
 
 @media screen and (max-width: 767px) {
@@ -750,6 +801,15 @@ label.error {
     #fbLogin {
         width: 92.5%;
         margin-left: 1px;
+    }
+    
+    #google {
+        margin-top: 3%;
+        width: 88%;
+    }
+    
+    #googleBtnText {
+        margin-left: 30px;
     }
 }
 
@@ -770,6 +830,29 @@ label.error {
     }
 }
 
+@media screen and (max-width: 481px) {
+    #fb {
+        margin-top: 3%;
+        width: 100%;
+    }
+    
+    #google {
+        margin-top: 3%;
+        width: 105%;
+    }
+}
+
+@media screen and (max-width: 415px) {
+    #google {
+        margin-top: 3%;
+        width: 145%;
+    }
+    
+    #googleBtnText {
+        margin-left: 35px;
+    }
+}
+
 @media screen and (max-width: 375px) {
     #signin-button1 {
         width: 100%;
@@ -778,6 +861,15 @@ label.error {
     
     #fbLogin {
         width: 89%;
+    }
+    
+    #google {
+        margin-top: 3%;
+        width: 148%;
+    }
+    
+    #googleBtnText {
+        margin-left: 27px;
     }
 }
 
@@ -789,6 +881,19 @@ label.error {
     
     #fbLogin {
         width: 89%;
+    }
+    
+    #fbBtnText {
+        margin-left: 14%;
+    }
+    
+    #google {
+        margin-top: 3%;
+        width: 150%;
+    }
+    
+    #googleBtnText {
+        margin-left: 10px;
     }
 }
 /*@media screen and (max-width: 2560px) {  laptop 

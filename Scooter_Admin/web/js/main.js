@@ -237,11 +237,18 @@ var sn = {
                 if (id !== pId) {
                     var shortenedName = name.length > 40 ? name.substring(0, 40) + "..." : name;
                     productPanel += "<div id='" + index + "' onclick='sn.clickActions(this);' class='form-group col-sm-4 col-xs-12'>";
+                    productPanel += "<span class='pName' style='display: none;'>" + name + "</span>";
                     productPanel += "<label style='display: none;'>" + id + "</label>";
-                    productPanel += "<img align='center' src='" + images + "' width='250' height='200'>";
-                    productPanel += "<h5 title='" + name + "'>" + shortenedName + "</h5>";
-                    productPanel += "<h5 style='height: 30px;'><b>Category: </b>" + cat + "</h5>";
-                    productPanel += "<h5 style='height: 30px;'><b>Product Brand: </b>" + productBrand + "</h5>";
+                    productPanel += "<img class='productImg' align='center' src='" + images + "' width='250' height='200' alt />";
+                    productPanel += "<h5 class='productName' title='" + name + "'>" + shortenedName + "</h5>";
+                    productPanel += "<h5 class='productCat' style='height: 30px;'><b>Category: </b>" + cat + "</h5>";
+                    console.log("pBrand: >>> \"" + productBrand + "\"");
+                    if (productBrand.trim() === "") {
+                        productPanel += "<h5 class='productBrand' style='height: 30px;'><b>Product Brand: </b>Not Specified</h5>";
+                    }
+                    else {
+                        productPanel += "<h5 class='productBrand' style='height: 30px;'><b>Product Brand: </b>" + productBrand + "</h5>";
+                    }
                     productPanel += "</div>";
                 }
             });
@@ -593,11 +600,17 @@ var sn = {
                     var bgColor = isSelected ? "rgb(244, 146, 65)" : "white";
                     var shortenedName = name.length > 40 ? name.substring(0, 40) + "..." : name;
                     productPanel += "<div style='background-color: " + bgColor + "' id='" + index + "' onclick='sn.clickActions(this);' class='form-group col-sm-4 col-xs-12'>";
+                    productPanel += "<span class='pName' style='display: none;'>" + name + "</span>";
                     productPanel += "<label style='display: none;'>" + id + "</label>";
-                    productPanel += "<img align='center' src='" + images + "' width='250' height='200'>";
-                    productPanel += "<h5 title='" + name + "'>" + shortenedName + "</h5>";
-                    productPanel += "<h5 style='height: 30px;'><b>Category: </b>" + cat + "</h5>";
-                    productPanel += "<h5 style='height: 30px;'><b>Product Brand: </b>" + productBrand + "</h5>";
+                    productPanel += "<img class='productImg' align='center' src='" + images + "' width='250' height='200' alt />";
+                    productPanel += "<h5 class='productName' title='" + name + "'>" + shortenedName + "</h5>";
+                    productPanel += "<h5class='productCat' style='height: 30px;'><b>Category: </b>" + cat + "</h5>";
+                    if (productBrand.trim() === "") {
+                        productPanel += "<h5 class='productBrand' style='height: 30px;'><b>Product Brand: </b>Not Specified</h5>";
+                    }
+                    else {
+                        productPanel += "<h5 class='productBrand' style='height: 30px;'><b>Product Brand: </b>" + productBrand + "</h5>";
+                    }
                     productPanel += "</div>";
                 }
             });
@@ -1315,10 +1328,7 @@ var sn = {
         var result = await self.retrieveWsData('POST', 'retrieveUnapprovedAccounts', {});
         if (result.status) {
             var accounts = result.accounts;
-            var fbAccounts = result.fbaccounts;
-            var googleAccounts = result.googleaccounts;
-            
-            if (accounts.length === 0 && fbAccounts.length === 0 && googleAccounts.length === 0) {
+            if (accounts.length === 0) {
                 $('#accounts tbody').append("<tr><td colrpsn='4'>No accounts to be approved</td></tr>");
                 $('.content-wrapper').loading('stop');
                 return;
@@ -1330,37 +1340,8 @@ var sn = {
                     var email = account.email;
                     var output = "<tr id=\"" + index + "\">";
                     output += "<td>" + (index + 1) + "</td>";
-                    output += "<td>" + username + "</td>";
                     output += "<td>" + email + "</td>";
-                    output += "<td><center><a onclick=\"approve('" + index++ + "','" + email + "','" + username + "') \" target='_blank' class='btn btn-default'>Approve</a></center></td>";
-                    output += " </tr>";
-                    $('#accounts tbody').append(output);
-                });
-            }
-            
-            if (fbAccounts.length !== 0) {
-                fbAccounts.forEach(function(fbAccount) {
-                    var fbId = fbAccount.fb_id;
-                    var email = fbAccount.email;
-                    var output = "<tr id=\"" + index + "\">";
-                    output += "<td>" + (index + 1) + "</td>";
-                    output += "<td>" + fbId + "</td>";
-                    output += "<td>" + email + "</td>";
-                    output += "<td><center><a onclick=\"approveFb('" + index++ + "','" + email + "','" + fbId + "') \" target='_blank' class='btn btn-default'>Approve</a></center></td>";
-                    output += " </tr>";
-                    $('#accounts tbody').append(output);
-                });
-            }
-            
-            if (googleAccounts.length !== 0) {
-                googleAccounts.forEach(function(googleAccount) {
-                    var googleId = googleAccount.google_id;
-                    var email = googleAccount.email;
-                    var output = "<tr id=\"" + index + "\">";
-                    output += "<td>" + (index + 1) + "</td>";
-                    output += "<td>" + googleId + "</td>";
-                    output += "<td>" + email + "</td>";
-                    output += "<td><center><a onclick=\"approveGoogle('" + index++ + "','" + email + "','" + googleId + "') \" target='_blank' class='btn btn-default'>Approve</a></center></td>";
+                    output += "<td><center><a onclick=\"approve('" + index++ + "','" + email + "') \" target='_blank' class='btn btn-default'>Approve</a></center></td>";
                     output += " </tr>";
                     $('#accounts tbody').append(output);
                 });
@@ -1397,49 +1378,9 @@ var sn = {
         }
     },
 
-    approveAccount: async function(email, username, index) {
+    approveAccount: async function(email, index) {
         var self = this;
-        var result = await self.retrieveWsData('POST', 'approveAccount', {email: email, username: username});
-        if (result.status) {
-            var table = $('#accounts').DataTable();
-            table.row($('tr#' + index)).remove().draw();
-            $('.content-wrapper').loading('stop');
-            location.replace("assignTier.jsp?type=sn&email=" + email + "&username=" + username);
-        }
-        else {
-            $.toast({
-                heading: 'Error',
-                text: result.message,
-                showHideTransition: 'fade',
-                icon: 'error'
-            });
-        }
-    },
-
-    approveFbAccount: async function(email, fbId, index) {
-        var self = this;
-        var result = await self.retrieveWsData('POST', 'approveFBAccount', {email: email, fbId: fbId});
-        console.log(result);
-        if (result.status) {
-            var table = $('#accounts').DataTable();
-            table.row($('tr#' + index)).remove().draw();
-            $('.content-wrapper').loading('stop');
-            location.replace("assignTier.jsp?clientId=" + result.clientId);
-        }
-        else {
-            $.toast({
-                heading: 'Error',
-                text: result.message,
-                showHideTransition: 'fade',
-                icon: 'error'
-            });
-        }
-    },
-
-    approveGoogleAccount: async function(email, googleId, index) {
-        var self = this;
-        var result = await self.retrieveWsData('POST', 'approveGoogleAccount', {email: email, googleId: googleId});
-        console.log(result);
+        var result = await self.retrieveWsData('POST', 'approveAccount', {email: email});
         if (result.status) {
             var table = $('#accounts').DataTable();
             table.row($('tr#' + index)).remove().draw();

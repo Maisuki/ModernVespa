@@ -29,7 +29,15 @@
                                 <!-- form start -->
                                 <form role="form" action="selectRelatedProducts" method="post">
                                     <div style="padding-top:10px;padding-left: 20px;padding-right:30px">
-                                        <button type="submit" class="btn btn-primary"name="submit" style="float:right">Submit</button>
+                                        <div style="display: inline-block; margin-left: 30%;">
+                                            <label for="search">Filter: </label>&emsp;
+                                            <input type="text" id="search" placeholder="Search by product name" />
+                                            <input type="button" id="searchBtn" value="Search" style="margin-left: 20px;" />
+                                            <div id="filter" style="display: none; margin-left: 20px;">
+                                                <img src="img/spinner.gif" width="20" height="20" alt />
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary" name="submit" style="float:right">Submit</button>
                                     </div>
                                     <div class="box-body" id="productPanel">
                                         <br>

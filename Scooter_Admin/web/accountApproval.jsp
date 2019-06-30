@@ -29,7 +29,6 @@
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
-                                                <th>Username</th>
                                                 <th>Email</th>
                                                 <th></th>
                                             </tr>

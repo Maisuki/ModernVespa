@@ -10,13 +10,6 @@
 <!DOCTYPE html>
 <html>
     <%@include file="common/header-imports.jsp" %>
-    <%
-//         if (session.getAttribute("user") == null) {
-//            session.invalidate();
-//            response.sendRedirect("login.jsp?page=shop-cart.jsp&message=Session%20Expired%21%20Please%20relogin%21");
-//            return;
-//        }
-    %>
     <body onload="myFunction()" style="margin:0;">
         <div id="loader"></div>
         <div style="display:none;" id="myDiv" class="page">

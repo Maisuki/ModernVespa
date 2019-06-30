@@ -7,7 +7,6 @@ public class StringEntityTranslator {
         for (char idx = 0; idx < text.length(); idx++) {
             char current = text.charAt(idx);
             int unicode = (int) current;
-//            System.out.println(current + " >> " + unicode);
             switch (unicode) {
                 case 8364:
                     updatedText += "&#34;";

@@ -8,7 +8,8 @@ public class RefererCheckManager {
                 referer.contains("https://www.scooternarcotics.com") ||
                 referer.contains("https://scooter-narcotics.com") ||
                 referer.contains("https://www.scooter-narcotics.com") ||
-                referer.contains("http://localhost:8080/Scooter_Admin")) {
+                referer.contains("http://localhost:8080/Scooter_Admin") ||
+                referer.contains("http://localhost:8084/Scooter_Admin")) {
             boolean isFound = false;
             for (String fileName: fileNames) {
                 if (referer.contains(fileName)) {
@@ -22,7 +23,8 @@ public class RefererCheckManager {
                     referer.equals("https://www.scooternarcotics.com/Scooter_Admin/") ||
                     referer.equals("https://scooter-narcotics.com/Scooter_Admin/") ||
                     referer.equals("https://www.scooter-narcotics.com/Scooter_Admin/") ||
-                    referer.equals("http://localhost:8080/Scooter_Admin/")) {
+                    referer.equals("http://localhost:8080/Scooter_Admin/") ||
+                    referer.equals("http://localhost:8084/Scooter_Admin/")) {
                 return true;
             }
             return isFound;
@@ -39,7 +41,8 @@ public class RefererCheckManager {
                 referer.contains("https://www.scooternarcotics.com") ||
                 referer.contains("https://scooter-narcotics.com") ||
                 referer.contains("https://www.scooter-narcotics.com") ||
-                referer.contains("http://localhost:8080/Scooter_Admin")) {
+                referer.contains("http://localhost:8080/Scooter_Admin") ||
+                referer.contains("http://localhost:8084/Scooter_Admin")) {
             return true;
         }
         return false;

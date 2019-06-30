@@ -131,7 +131,7 @@ function search() {
             $(input).next().show();
         });
 
-        $(".form-group").each(async function (index, div) {
+        $(".form-group").each(function (index, div) {
             var count = 0;
             $(div).children(":visible").each(function (index, child) {
                 if (!$(child).is("br")) {

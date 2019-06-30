@@ -37,8 +37,7 @@ public class LoginServlet extends HttpServlet {
 
         if (type.equals("fb")) {
             String fbId = request.getParameter("fbId");
-            String email = request.getParameter("email");
-            if (fbId == null || fbId.trim().isEmpty() || email == null || email.trim().isEmpty()) {
+            if (fbId == null || fbId.trim().isEmpty()) {
                 String message = "Your facebook account is not linked yet!";
 
                 JsonObject errObj = new JsonObject();
@@ -52,11 +51,10 @@ public class LoginServlet extends HttpServlet {
             String xForwardedFor = request.getHeader("x-forwarded-for");
 
             POST_URL = Global.BASE_URL + "/fblogin";
-            POST_PARAMS = "fbId=" + fbId + "&email=" + email + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
+            POST_PARAMS = "fbId=" + fbId + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
         } else if (type.equals("google")) {
             String googleId = request.getParameter("googleId");
-            String email = request.getParameter("email");
-            if (googleId == null || googleId.trim().isEmpty() || email == null || email.trim().isEmpty()) {
+            if (googleId == null || googleId.trim().isEmpty()) {
                 String message = "Your google account is not linked yet!";
 
                 JsonObject errObj = new JsonObject();
@@ -70,7 +68,7 @@ public class LoginServlet extends HttpServlet {
             String xForwardedFor = request.getHeader("x-forwarded-for");
 
             POST_URL = Global.BASE_URL + "/googlelogin";
-            POST_PARAMS = "googleId=" + googleId + "&email=" + email + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
+            POST_PARAMS = "googleId=" + googleId + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
         } else {
             String username = request.getParameter("username");
             String password = request.getParameter("password");

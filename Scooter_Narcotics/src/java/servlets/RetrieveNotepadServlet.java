@@ -28,8 +28,6 @@ public class RetrieveNotepadServlet extends HttpServlet {
             return;
         }
         
-        System.out.println(referer);
-        
         if (!RefererCheckManager.refererCheck(referer, "account.jsp", "personalinfo.jsp", "orders.jsp", "view-notepad.jsp")) {
             response.getWriter().println("Unauthorized access!");
             return;

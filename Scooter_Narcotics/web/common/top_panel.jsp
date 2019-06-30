@@ -44,18 +44,6 @@
                     <i class="fa fa-sign-in"></i>
                     Login
                 </a>
-                <!--                <label style="font-size: 12px; font-weight: bold; display: inline-block;">LOGIN:&emsp;</label>
-                                <form action="login" method="post" class="block-cont" style="display: inline; margin-right: 5px;">
-                                    <div style="display: inline-block; width: 30%;" class="input">
-                                        <input style="height: 25px;" type="text" name="username" placeholder="Username" required>
-                                    </div>
-                                    &emsp;
-                                    <div style="display: inline-block; width: 30%;" class="input">
-                                        <input style="height: 25px;" type="password" name="password" placeholder="Password" required>
-                                    </div>
-                                    &emsp;
-                                    <button style="padding: 3px;" type="submit" class="button">Login</button>
-                                </form>-->
             </li>
             <li>
                 <a style="margin-right: 10px;" href="registration.jsp" class="cart-summary">

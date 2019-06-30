@@ -88,13 +88,13 @@
                                 <font color='red'>${message}</font>
                                 <br><br>
                                 <div id="fbBtn" align="center" style="width: 100%;">
-                                    <a id="fbReg" class="fb-button" onClick="FBRegister()">ALLOW FACEBOOK LOGIN</a>
+                                    <a id="fbReg" class="fb-button" onClick="FBRegister1()">ALLOW FACEBOOK LOGIN</a>
                                 </div>
                                 <div id="fbAcknowledgement" style=";display: none;">
                                     <font color="green">Facebook Login Enabled...Please fill in the rest of the details...</font>
                                 </div>
                                 <div id="googleBtn" align="center" style="width: 100%;margin-left: -16%;margin-top: 20px;">
-                                    <div id="signin-button2">
+                                    <div id="signin-button3">
                                         <span class="icon"></span>
                                         <span class="buttonText">ALLOW GOOGLE LOGIN</span>
                                     </div>
@@ -115,7 +115,7 @@
                                     Use Google Email for this account?
                                 </label>
 
-                                <form id="registrationForm" class="block-cont">
+                                <form id="registrationForm1" class="block-cont">
                                     <div class="input">
                                         <font id="message" color="red">${message}</font>
                                     </div>

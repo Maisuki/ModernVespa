@@ -18,28 +18,10 @@ public class NotifyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        String type = request.getParameter("type");
-        String clientId = request.getParameter("clientId");
         String email = request.getParameter("email");
-//        String username = request.getParameter("username");
-//        String fbId = request.getParameter("fbId");
-//        String gId = request.getParameter("gId");
         
-//        if (type == null || type.trim().isEmpty()) {
-//            throw new IOException("type is required!");
-//        }
-//        
-//        if (type.equals("sn") && (email == null || username == null)) {
-//            throw new IOException("email and username are required!");
-//        }
-//        else if (type.equals("fb") && (email == null || fbId == null)) {
-//            throw new IOException("email and fbId are required!");
-//        }
-//        else if (type.equals("google") && (email == null || gId == null)) {
-//            throw new IOException("email and gId are required!");
-//        }
-        if (clientId == null) {
-            throw new RuntimeException("clientId is required!");
+        if (email == null) {
+            throw new IOException("email and username are required!");
         }
         
         final String gMailusername = "info@scooternarcotics.com";

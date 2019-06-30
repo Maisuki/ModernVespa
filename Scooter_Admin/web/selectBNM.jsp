@@ -39,10 +39,10 @@
                                             <input type="text" id="search" placeholder="Search" />
                                             <input type="button" id="searchBtn" value="Search" style="margin-left: 20px;" />
                                             <div id="filter" style="display: none; margin-left: 20px;">
-                                                <img src="img/spinner.gif" width="20" height="20">
+                                                <img src="img/spinner.gif" width="20" height="20" alt />
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary"name="submit" style="float:right">Submit</button>
+                                        <button type="submit" class="btn btn-primary" name="submit" style="float:right">Submit</button>
                                     </div>
                                     <div class="box-body">
                                         <br>

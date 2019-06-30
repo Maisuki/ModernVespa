@@ -8,7 +8,8 @@ public class RefererCheckManager {
                 referer.contains("https://www.scooternarcotics.com") ||
                 referer.contains("https://scooter-narcotics.com") ||
                 referer.contains("https://www.scooter-narcotics.com") ||
-                referer.contains("localhost:8080/Scooter_Narcotics")) {
+                referer.contains("localhost:8080/Scooter_Narcotics") ||
+                referer.contains("localhost:8084/Scooter_Narcotics")) {
             boolean isFound = false;
             for (String fileName: fileNames) {
                 if (referer.contains(fileName)) {
@@ -17,7 +18,9 @@ public class RefererCheckManager {
                 }
             }
             if (referer.equals("https://scooter-narcotics.com/") ||
+                    referer.equals("https://scooter-narcotics.com/abc/") ||
                     referer.equals("https://www.scooter-narcotics.com/") ||
+                    referer.equals("https://www.scooter-narcotics.com/abc/") ||
                     referer.equals("https://scooternarcotics.com/") ||
                     referer.equals("https://www.scooternarcotics.com/") ||
                     referer.equals("https://modernvespa.sg/") ||
@@ -38,7 +41,8 @@ public class RefererCheckManager {
                 referer.contains("https://www.scooternarcotics.com") ||
                 referer.contains("https://scooter-narcotics.com") ||
                 referer.contains("https://www.scooter-narcotics.com") ||
-                referer.contains("localhost:8080/Scooter_Narcotics")) {
+                referer.contains("localhost:8080/Scooter_Narcotics") ||
+                referer.contains("localhost:8084/Scooter_Narcotics")) {
             return true;
         }
         return false;

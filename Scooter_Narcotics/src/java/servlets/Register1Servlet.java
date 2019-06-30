@@ -7,16 +7,16 @@ import com.google.gson.JsonParser;
 import common.Global;
 import controller.RefererCheckManager;
 import controller.SNServer;
+import controller.ValidationManager;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import controller.ValidationManager;
 
-@WebServlet(name = "RegisterServlet", urlPatterns = {"/register"})
-public class RegisterServlet extends HttpServlet {
+@WebServlet(name = "Register1Servlet", urlPatterns = {"/register1"})
+public class Register1Servlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -28,7 +28,7 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        if (!RefererCheckManager.refererCheck(referer, "registration.jsp")) {
+        if (!RefererCheckManager.refererCheck(referer, "regtest.jsp")) {
             response.getWriter().println("Unauthorized access!");
             return;
         }
@@ -153,7 +153,7 @@ public class RegisterServlet extends HttpServlet {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String addressJson = gson.toJson(addressObj);
         
-        String POST_URL = Global.BASE_URL + "/register";
+        String POST_URL = Global.BASE_URL + "/register1";
         String POST_PARAMS = "fbId=" + fbId + "&googleId=" + googleId + "&username=" + username + "&password=" + password + "&fname=" + fname
                 + "&lname=" + lname + "&email=" + email + "&billAddress=" + addressJson
                 + "&contact=" + contact + "&role=" + role;
@@ -180,4 +180,5 @@ public class RegisterServlet extends HttpServlet {
 
         response.getWriter().println(new Gson().toJson(obj));
     }
+
 }

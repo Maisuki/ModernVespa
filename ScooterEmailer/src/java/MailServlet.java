@@ -23,8 +23,7 @@ public class MailServlet extends HttpServlet {
         String key = request.getParameter("key");
         String name = request.getParameter("name");
         String action = request.getParameter("action");
-        String type = request.getParameter("type");
-//        String username = request.getParameter("username");
+        String username = request.getParameter("username");
         System.out.println("here");
         if (action == null) {
             throw new IOException("action is required!");
@@ -34,7 +33,7 @@ public class MailServlet extends HttpServlet {
             throw new IOException("email, key, name are required!");
         }
         
-        if (action.equals("2") && (email == null)) {
+        if (action.equals("2") && (email == null || username == null)) {
             throw new IOException("email, key, name are required!");
         }
         
@@ -62,12 +61,12 @@ public class MailServlet extends HttpServlet {
             if (action.equals("1")) {
                 message.setSubject("Scooter Narcotics Account Activation");
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-                msg = craftActivateAccountEmail(name, email, type, key);
+                msg = craftActivateAccountEmail(name, email, key);
             }
             else if (action.equals("2")) {
                 message.setSubject("Scooter Narcotics Account Approval");
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("mark@scooternarcotics.com"));
-                msg = craftAccountApprovalEmail(name, email);
+                msg = craftAccountApprovalEmail(username, email);
             }
             else if (action.equals("3")) {
                 message.setSubject("Sccoter Narcotics Customer Order to be shipped");
@@ -84,7 +83,7 @@ public class MailServlet extends HttpServlet {
         }
     }
 
-    public static String craftActivateAccountEmail(String name, String email, String type, String key) {
+    public static String craftActivateAccountEmail(String name, String email, String key) {
         String emailContent = "<!DOCTYPE html>\n"
                 + "<html>\n"
                 + "    <head>\n"
@@ -117,7 +116,7 @@ public class MailServlet extends HttpServlet {
                 + "                        <br>\n"
                 + "                        <p>Click the link below to activate your account:</p>\n"
                 + "                        <u>\n"
-                + "                            <a href=\"https://scooter-narcotics.com/activate?type=" + type + "&email=" + email + "&verify=" + key + "\">CLICK HERE</a>\n"
+                + "                            <a href=\"https://scooter-narcotics.com/activate?email=" + email + "&verify=" + key + "\">https://scooter-narcotics.com/activate?email=" + email + "&verify=" + key + "</a>\n"
                 + "                        </u>\n"
                 + "                        <br><br>\n"
                 + "                    </div>\n"
@@ -143,7 +142,7 @@ public class MailServlet extends HttpServlet {
         return emailContent;
     }
     
-    public static String craftAccountApprovalEmail(String name, String email) {
+    public static String craftAccountApprovalEmail(String username, String email) {
         String emailContent = "<!DOCTYPE html>\n"
                 + "<html>\n"
                 + "    <head>\n"
@@ -176,7 +175,7 @@ public class MailServlet extends HttpServlet {
                 + "                        <br>\n"
                 + "                        <p>The following dealer requested to join on your platform:</p>\n"
                 + "                        <p>\n"
-                + "                            Name: " + name + ",<br>\n"
+                + "                            Username: " + username + ",<br>\n"
                 + "                            Email: " + email + "\n"
                 + "                        </p>\n"
                 + "                        <br><br>\n"

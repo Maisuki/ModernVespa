@@ -9,21 +9,24 @@ function init() {
             scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
         });
 
-//        gapi.auth2.getAuthInstance().currentUser.listen((user) => {
-//            var profile = user.getBasicProfile();
-//            if (profile !== undefined && location.href.indexOf('registration.jsp') === -1) {
-//                loginGoogle(profile.getId(), profile.getEmail());
-//            }
-//        });
+        // login from modal
         if ($("#signin-button").length !== 0) {
             gapi.auth2.getAuthInstance().attachClickHandler('signin-button', {}, onSuccess, onFailure);
         }
 
+        // login from login.jsp
         if ($("#signin-button1").length !== 0) {
             gapi.auth2.getAuthInstance().attachClickHandler('signin-button1', {}, onSuccess, onFailure);
         }
+
+        // register
         if ($("#signin-button2").length !== 0) {
             gapi.auth2.getAuthInstance().attachClickHandler('signin-button2', {}, onSuccess1, onFailure1);
+        }
+
+        // activate fb login
+        if ($("#signin-button3").length !== 0) {
+            gapi.auth2.getAuthInstance().attachClickHandler('signin-button3', {}, onSuccess2, onFailure2);
         }
     });
 }
@@ -43,7 +46,6 @@ function onFailure(error) {
 }
 
 function loginGoogle(id, email) {
-    console.log("123")
     $.ajax({
         type: 'POST',
         url: 'login',
@@ -79,26 +81,94 @@ function loginGoogle(id, email) {
     });
 }
 
-function GoogleRegister(googleId, email, first_name, last_name) {
-    $('#googleRegistrationForm').slideDown('slow');
-    $('#googleAcknowledgement').slideDown('slow');
-    $('#registrationForm').slideUp('slow');
-    $('#fbBtn, #googleBtn').slideUp('slow');
+var gId, gEmail, gFname, gLname;
 
-    $('#idGoogle').val(googleId);
-    $('#emailGoogle').val(email);
-    $('#fnameGoogle').val(first_name);
-    $('#lnameGoogle').val(last_name);
+function GoogleRegister(googleId, email, first_name, last_name) {
+    $("#googleBtn").hide();
+    $("#googleAcknowledgement").show();
+
+    gId = googleId;
+    gEmail = email;
+    gFname = first_name;
+    gLname = last_name;
+    $("#idGoogle").val(gId);
+
+    if (fbId !== undefined && $(".fborgoogle:visible").length === 0) {
+        $(".fborgoogle").show();
+    } else {
+        $("#email").val(gEmail);
+        $("#fname").val(gFname);
+        $("#lname").val(gLname);
+        $(".fborgoogle").hide();
+    }
 }
 
 function onSuccess1(googleUser) {
-    console.log("hi1");
     var profile = googleUser.getBasicProfile();
     GoogleRegister(profile.getId(), profile.getEmail(), profile.getGivenName(), profile.getFamilyName());
 }
 
 function onFailure1(error) {
-    console.log("hi");
+    $.toast({
+        heading: 'Error',
+        text: error.error,
+        showHideTransition: 'fade',
+        icon: 'error'
+    });
+}
+
+function activateGoogleLogin(googleId) {
+    $.ajax({
+        type: 'POST',
+        url: 'activateGoogleLogin',
+        data: {
+            googleId: googleId
+        },
+        success: function (data) {},
+        complete: function (e, xhr, settings) {
+            var rawData = e.responseText;
+            if (rawData === "Unauthorized access!") {
+                $.toast({
+                    heading: 'Error',
+                    text: rawData,
+                    showHideTransition: 'fade',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            var data = ($.parseJSON(e.responseText));
+
+            if (data.status) {
+                $.toast({
+                    heading: 'Success',
+                    text: 'Activated successfully!',
+                    showHideTransition: 'fade',
+                    icon: 'success'
+                });
+
+                setTimeout(function () {
+                    location.reload();
+                }, 2000);
+            } else {
+                $.toast({
+                    heading: 'Error',
+                    text: rawData,
+                    showHideTransition: 'fade',
+                    icon: 'error'
+                });
+            }
+        },
+        dataType: 'json'
+    });
+}
+
+function onSuccess2(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    activateGoogleLogin(profile.getId());
+}
+
+function onFailure2(error) {
     $.toast({
         heading: 'Error',
         text: error.error,

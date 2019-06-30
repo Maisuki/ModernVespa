@@ -11,7 +11,6 @@
 <html>
     <%@include file="common/header-imports.jsp" %>
     <%
-        System.out.println(session.getAttribute("user"));
         if (session.getAttribute("user") == null) {
             session.invalidate();
             response.sendRedirect("login.jsp?page=account.jsp&message=Session%20Expired%21%20Please%20relogin%21");
@@ -19,6 +18,7 @@
         }
     %>
     <body onload="myFunction()" style="margin:0;">
+        <%@include file="common/facebooklogin.jsp" %>
         <div id="loader"></div>
         <div style="display:none;" id="myDiv" class="page">
             <%@include file="common/top_panel.jsp" %>
@@ -53,6 +53,31 @@
                                         if (!account_created_via.equals("fb")) {
                                     %>
                                     <p><a href="change-password.jsp">CHANGE PASSWORD</a></p>
+                                    <%
+                                        }
+                                    %>
+                                    <%
+                                        String fbId = user.get("fb_id").getAsString();
+                                        if (fbId.equals("nil")) {
+                                    %>
+                                    <div id="fb">
+                                        <a class="fb-button" onClick="activateFBLogin()">
+                                            <span id="fbBtnText">ACTIVATE FACEBOOK LOGIN</span>
+                                        </a>
+                                    </div>
+                                    <%
+                                        }
+                                    %>
+                                    <%
+                                        String googleId = user.get("google_id").getAsString();
+                                        if (googleId.equals("nil")) {
+                                    %>
+                                    <div id="google">
+                                        <div id="signin-button3">
+                                            <span class="icon"></span>
+                                            <span id="googleBtnText" class="buttonText">ACTIVATE GOOGLE LOGIN</span>
+                                        </div>
+                                    </div>
                                     <%
                                         }
                                     %>
