@@ -48,7 +48,7 @@ public class UpdatePbrandServlet extends HttpServlet {
         }        
         
         String pbID = request.getParameter("productBrandID");
-        String pbrand = request.getParameter("pbrand");
+        String pBrand = request.getParameter("pbrand");
         String tier1Discount = request.getParameter("t1bd");
         String tier2Discount = request.getParameter("t2bd");
         String tier3Discount = request.getParameter("t3bd");
@@ -56,7 +56,7 @@ public class UpdatePbrandServlet extends HttpServlet {
         Part imagePart = request.getPart("pbrandImage");
         
         if (pbID == null || pbID.trim().isEmpty() ||
-                pbrand == null || pbrand.trim().isEmpty()) {
+                pBrand == null || pBrand.trim().isEmpty()) {
             JsonObject error = new JsonObject();
             error.addProperty("status", false);
             error.addProperty("message", "Product Brand ID and Name are required!");
@@ -77,8 +77,10 @@ public class UpdatePbrandServlet extends HttpServlet {
             tier4Discount = "0";
         }
         
+        pBrand = pBrand.trim();
+        
         String POST_URL = Global.BASE_URL + "/updateProductBrand";
-        String POST_PARAMS = "pbID=" + pbID + "&name=" + pbrand + "&tier1discountrate=" + tier1Discount
+        String POST_PARAMS = "pbID=" + pbID + "&name=" + pBrand + "&tier1discountrate=" + tier1Discount
                 + "&tier2discountrate=" + tier2Discount + "&tier3discountrate=" + tier3Discount
                 + "&tier4discountrate=" + tier4Discount;
         String result = SNServer.sendPOST(POST_URL, POST_PARAMS);

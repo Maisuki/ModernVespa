@@ -16,5 +16,6 @@ $("#addCatForm").submit(function(e){
         return;
     }
     
+    catName = catName.trim();    
     sn.addCategory(catName);
 });

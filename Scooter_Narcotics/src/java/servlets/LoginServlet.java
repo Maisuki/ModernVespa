@@ -1,8 +1,8 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import common.Global;
 import controller.RefererCheckManager;
 import controller.SNServer;
@@ -70,11 +70,11 @@ public class LoginServlet extends HttpServlet {
             POST_URL = Global.BASE_URL + "/googlelogin";
             POST_PARAMS = "googleId=" + googleId + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
         } else {
-            String username = request.getParameter("username");
+            String email = request.getParameter("email");
             String password = request.getParameter("password");
 
-            if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
-                String message = "Username/Password is not filled!";
+            if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
+                String message = "Email/Password is not filled!";
 
                 JsonObject errObj = new JsonObject();
                 errObj.addProperty("status", false);
@@ -86,12 +86,12 @@ public class LoginServlet extends HttpServlet {
             String remoteAddr = request.getRemoteAddr();
             String xForwardedFor = request.getHeader("x-forwarded-for");
 
-            POST_URL = Global.BASE_URL + "/loginv2";
-            POST_PARAMS = "username=" + username + "&password=" + password + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
+            POST_URL = Global.BASE_URL + "/loginv3";
+            POST_PARAMS = "email=" + email + "&password=" + password + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
         }
 
-        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonObject obj = result.getAsJsonObject();
         boolean status = obj.get("status").getAsBoolean();
 
         if (!status) {

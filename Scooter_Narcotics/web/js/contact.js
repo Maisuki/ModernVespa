@@ -8,6 +8,7 @@ function showPage() {
     document.getElementById("loader").style.display = "none";
     document.getElementById("myDiv").style.display = "block";
 }
+
 $(document).ready(function () {
     if (ccode !== "SGD") {
         document.getElementById("hideService").style.display = 'none';

@@ -92,11 +92,11 @@ $(document).ready(function () {
 
                 /**** Display product basic information (Name, Price, Categories and Buttons) ****/
                 var productName = product.name;
-                var translatedProductName = translate(productName);
                 if (images === undefined || images === null && images.length === 0) {
-                    translatedProductName += " (Coming Soon)";
+                    productName += " (Coming Soon)";
+//                    translatedProductName += " (Coming Soon)";
                 }
-                var basicInformationPanel = "<div class='block-head block-head-4'>" + translatedProductName + "</div>";
+                var basicInformationPanel = "<div class='block-head block-head-4'>" + productName + "</div>";
                 basicInformationPanel += "<br><br>";
 
                 var price = 0;
@@ -195,7 +195,10 @@ $(document).ready(function () {
                     basicInformationPanel += "</div>";
                 }
                 basicInformationPanel += "<p>Category: ";
-                basicInformationPanel += "<a href='products.jsp?search=" + product.cat + "'>" + product.cat + "</a></p>";
+                var escapeCat = product.cat.replace("&", "%26");
+//                var searchUrl = "products.jsp?cat=" + product.cat + "&brand=&model=";
+                basicInformationPanel += "<a href='products.jsp?cat=" + escapeCat + "&brand=&model='>" + product.cat + "</a></p>";
+//                basicInformationPanel += "<a href='products.jsp?search=" + product.cat + "'>" + product.cat + "</a></p>";
                 var productBrandImg = product.productBrandImg === "nil" ? "img/coming_soon.jpg" : base + "/" + product.productBrandImg;
                 basicInformationPanel += "<table>";
                 basicInformationPanel += "<tr>";
@@ -204,7 +207,7 @@ $(document).ready(function () {
                 basicInformationPanel += "</td>";
                 basicInformationPanel += "<td style='padding:10px;'>";
                 basicInformationPanel += "<a href='products.jsp?search=" + product.productBrand + "'>";
-                basicInformationPanel += "<img title='" + product.productBrand + "' src='" + productBrandImg + "' width='50' height='50'>";
+                basicInformationPanel += "<img title='" + product.productBrand + "' src='" + productBrandImg + "' height='50'>";
                 basicInformationPanel += "</a>";
                 basicInformationPanel += "</td>";
                 basicInformationPanel += "</tr>";
@@ -221,17 +224,23 @@ $(document).ready(function () {
 
                 /**** Display product description ****/
                 var description = product.desc;
-                var translatedDescription = translate(description);
-                translatedDescription = translatedDescription.replace(/(?:\\[rn])+/g, "");
-                translatedDescription = translatedDescription.replace(/%20/g, " ");
-                $("#descriptionPanel").append(translatedDescription);
+                if (description === undefined || description === "" || description.indexOf("Product description") > -1 ||
+                        description.indexOf("product description") > -1) {
+                    $("#descriptionPanel").append("The description for " + product.name + " is still in progress.");
+                }
+                else {
+                    var translatedDescription = translate(description);
+                    translatedDescription = translatedDescription.replace(/(?:\\[rn])+/g, "");
+                    translatedDescription = translatedDescription.replace(/%20/g, " ");
+                    $("#descriptionPanel").append(translatedDescription);
+                }
                 /**** Display product description ****/
 
 
                 /**** Display product fitment list ****/
                 var fitmentListPanel = "Fitment list is not avaliable";
                 var brandNmodel = product.brandNmodel;
-                if (brandNmodel !== undefined && brandNmodel !== null) {
+                if (brandNmodel !== undefined && brandNmodel !== null && brandNmodel !== []) {
                     fitmentListPanel = "";
                     for (var brand in brandNmodel) {
                         var modelList = brandNmodel[brand];
@@ -241,7 +250,7 @@ $(document).ready(function () {
                                 fitmentListPanel += "<h4>" + modelList[key] + "</h4>";
                                 fitmentListPanel += "</u>";
                                 fitmentListPanel += "<ul>";
-                            } else {
+                            } else if (key === "modelList") {
                                 var models = modelList[key];
                                 for (var modelIndex in models) {
                                     fitmentListPanel += "<li>" + models[modelIndex] + "</li>";
@@ -309,20 +318,24 @@ $(document).ready(function () {
                             outputDesktop += "</div>";
                         }
 
-                        var translatedprodname = translate(name);
+//                        var translatedprodname = translate(name);
                         var alt = "";
-                        if (translatedprodname.length >= 70) {
-                            alt = translatedprodname.substring(0, 71) + "...";
+                        if (name.length >= 70) {
+//                        if (translatedprodname.length >= 70) {
+//                            alt = translatedprodname.substring(0, 71) + "...";
+                            alt = name.substring(0, 71) + "...";
                         } else {
-                            alt = translatedprodname;
+//                            alt = translatedprodname;
+                            alt = name;
                         }
 
                         outputDesktop += "<h3>";
                         outputDesktop += "<a href='shop-details.jsp?productId=" + pId + "'>";
-                        outputDesktop += "<p title='" + translatedprodname + "' class='limited-text'>" + alt + "</p>";
+//                        outputDesktop += "<p title='" + translatedprodname + "' class='limited-text'>" + alt + "</p>";
+                        outputDesktop += "<p title='" + name + "' class='limited-text'>" + alt + "</p>";
                         outputDesktop += "</a>";
                         outputDesktop += "</h3>";
-                        outputDesktop += "<p style='height:30px'>" + category + "</p>";
+                        outputDesktop += "<p style='height:35px; margin-right: -5px;'>" + category + "</p>";
 
                         var price = 0;
                         if (ccode === "SGD") {
@@ -416,17 +429,18 @@ $(document).ready(function () {
                             outputMobile += "</div>";
                         }
 
-                        var translatedprodname = translate(name);
-                        var alt = "";
-                        if (translatedprodname.length >= 70) {
-                            alt = translatedprodname.substring(0, 71) + "...";
-                        } else {
-                            alt = translatedprodname;
-                        }
+//                        var translatedprodname = translate(name);
+//                        var alt = "";
+//                        if (translatedprodname.length >= 70) {
+//                            alt = translatedprodname.substring(0, 71) + "...";
+//                        } else {
+//                            alt = translatedprodname;
+//                        }
 
                         outputMobile += "<h3>";
                         outputMobile += "<a href='shop-details.jsp?productId=" + pId + "'>";
-                        outputMobile += "<p style='height: 75px;' title='" + translatedprodname + "' class='limited-text'>" + alt + "</p>";
+//                        outputMobile += "<p style='height: 75px;' title='" + translatedprodname + "' class='limited-text'>" + alt + "</p>";
+                        outputMobile += "<p style='height: 75px;' title='" + name + "' class='limited-text'>" + alt + "</p>";
                         outputMobile += "</a>";
                         outputMobile += "</h3>";
                         outputMobile += "<p style='height:30px'>" + category + "</p>";
@@ -496,7 +510,8 @@ $(document).ready(function () {
                             outputMobile += "<div class='price'>" + ccode + " " + price + "</div>";
                         }
                         outputMobile += "<div class='actions'>";
-                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + translatedprodname + "\", \"" + pId + "\", " + price + ")'>";
+//                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + translatedprodname + "\", \"" + pId + "\", " + price + ")'>";
+                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + name + "\", \"" + pId + "\", " + price + ")'>";
                         outputMobile += "<i class='fa fa-shopping-cart'></i>";
                         outputMobile += "Add to cart";
                         outputMobile += "</a>";

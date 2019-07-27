@@ -31,9 +31,9 @@ public class AddCatServlet extends HttpServlet {
             return;
         }
         
-        String catname = request.getParameter("catName");
+        String catName = request.getParameter("catName");
         
-        if (catname == null || catname.trim().isEmpty()) {
+        if (catName == null || catName.trim().isEmpty()) {
             JsonObject error = new JsonObject();
             error.addProperty("status", false);
             error.addProperty("message", "Category is required!");
@@ -41,8 +41,10 @@ public class AddCatServlet extends HttpServlet {
             return;
         }
         
+        catName = catName.trim();
+        
         String POST_URL = Global.BASE_URL + "/addCat";
-        String POST_PARAMS = "catName=" + catname;
+        String POST_PARAMS = "catName=" + catName;
         
         String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
         JsonObject obj = new JsonParser().parse(result).getAsJsonObject();

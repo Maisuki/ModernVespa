@@ -44,10 +44,12 @@ public class SNServer {
         URL url = new URL(POST_URL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
+        conn.setRequestProperty("Accept", "application/json");
+//        conn.setRequestProperty("Content-Type", "text/html;charset=iso-8859-1");
         // For POST only - START
         conn.setDoOutput(true);
         OutputStream os = conn.getOutputStream();
-        os.write(POST_PARAMS.getBytes());
+        os.write(POST_PARAMS.getBytes("UTF-8"));
         os.flush();
         os.close();
         // For POST only - END
@@ -55,7 +57,7 @@ public class SNServer {
         int responseCode = conn.getResponseCode();
 
         if (responseCode == HttpURLConnection.HTTP_OK) { //success
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "8859_1"));
             String inputLine;
             StringBuilder response = new StringBuilder();
 

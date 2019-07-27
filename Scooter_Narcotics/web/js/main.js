@@ -15,6 +15,20 @@ function msieversion()
             return false;
 }
 
+function showLogin() {
+    var inst = $('[data-remodal-id=modal1]').remodal({closeOnConfirm: false, closeOnCancel: true, closeOnEscape: true, closeOnOutsideClick: true});
+    inst.open();
+}
+
+if (document.getElementById('myModal') !== null) {
+    var pathname = location.pathname;
+    if (pathname === '/Scooter_Narcotics/index.jsp' || pathname === '/Scooter_Narcotics/' ||
+            pathname === '/' || pathname === '/index.jsp') {
+        setTimeout(function () {
+            showLogin();
+        }, 3000);
+    }
+}
 
 /**/
 /* google map */
@@ -80,17 +94,17 @@ $(window).resize(function()
 
 $('#loginForm').submit(function(e) {
     e.preventDefault();
-    var username = $('#modalusername').val();
+    var email = $('#modalemail').val();
     var password = $('#modalpassword').val();
-    if (username.trim() === '' || password.trim() === '') {
-        $('#errMsg').text('Username and Password must be filled!');
+    if (email.trim() === '' || password.trim() === '') {
+        $('#errMsg').text('Email and Password must be filled!');
         return;
     }
     $.ajax({
         type: 'POST',
         url: 'login',
         data: {
-            username: username,
+            email: email,
             password: password,
             type: 'basic'
         },

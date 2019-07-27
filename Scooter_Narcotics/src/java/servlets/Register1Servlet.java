@@ -2,8 +2,8 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import common.Global;
 import controller.RefererCheckManager;
 import controller.SNServer;
@@ -42,7 +42,7 @@ public class Register1Servlet extends HttpServlet {
             return;
         }
 
-        String username = request.getParameter("username");
+//        String username = request.getParameter("username");
         String password = request.getParameter("password");
         String cfmPassword = request.getParameter("cfmpassword");
         String email = request.getParameter("email");
@@ -94,16 +94,17 @@ public class Register1Servlet extends HttpServlet {
             return;
         }
 
-        if (username == null || username.trim().isEmpty()) {            
-            if (password != null && !password.trim().isEmpty()) {
-                JsonObject error = new JsonObject();
-                error.addProperty("status", false);
-                error.addProperty("message", "Username is required to be filled since Password have been filled!");
-                response.getWriter().println(new Gson().toJson(error));
-                return;
-            }
-            username = "nil";
-        }
+        String username = "nil";
+//        if (username == null || username.trim().isEmpty()) {            
+//            if (password != null && !password.trim().isEmpty()) {
+//                JsonObject error = new JsonObject();
+//                error.addProperty("status", false);
+//                error.addProperty("message", "Username is required to be filled since Password have been filled!");
+//                response.getWriter().println(new Gson().toJson(error));
+//                return;
+//            }
+//            username = "nil";
+//        }
         
         if ((password == null || password.trim().isEmpty()) && (cfmPassword == null || cfmPassword.trim().isEmpty())) {
             password = "nil";
@@ -158,8 +159,8 @@ public class Register1Servlet extends HttpServlet {
                 + "&lname=" + lname + "&email=" + email + "&billAddress=" + addressJson
                 + "&contact=" + contact + "&role=" + role;
 
-        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonObject obj = result.getAsJsonObject();
 
         boolean status = obj.get("status").getAsBoolean();
 

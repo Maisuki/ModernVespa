@@ -21,6 +21,7 @@ function translate(text) {
             case 130:
                 translatedText = translatedText.substring(0, translatedText.length - 1);
                 break;
+            case 63:
             case 128:
             case 152:
             case 156:
@@ -40,19 +41,4 @@ function translate(text) {
     }
     translatedText = translatedText.replace(/%20/g, " ");
     return translatedText;
-}
-
-function showLogin() {
-    var inst = $('[data-remodal-id=modal1]').remodal({closeOnConfirm: false, closeOnCancel: true, closeOnEscape: true, closeOnOutsideClick: true});
-    inst.open();
-}
-
-if (document.getElementById('myModal') !== null) {
-    var pathname = location.pathname;
-    if (pathname === '/Scooter_Narcotics/index.jsp' || pathname === '/Scooter_Narcotics/' ||
-            pathname === '/' || pathname === '/index.jsp') {
-        setTimeout(function () {
-            showLogin();
-        }, 4000);
-    }
 }

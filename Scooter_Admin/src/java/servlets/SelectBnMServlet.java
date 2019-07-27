@@ -30,7 +30,6 @@ public class SelectBnMServlet extends HttpServlet {
             request.setAttribute("message", message);
             return;
         }
-//        String url = "products.jsp";
         String url = "selectRelatedProducts.jsp?id=" + id;
         response.sendRedirect(url);
     }

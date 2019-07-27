@@ -49,9 +49,10 @@ public class WildSearchServiceServlet extends HttpServlet {
         String POST_URL = Global.BASE_URL + "/superSearch";
         String POST_PARAMS = "query=" + query + "&currency=" + currency + "&page=" + page;
         
-        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonObject obj = result.getAsJsonObject();
         
+        response.setHeader("Content-Type", "application/json; charset=ISO-8859-1");
         response.getWriter().println(new Gson().toJson(obj));
     }
     

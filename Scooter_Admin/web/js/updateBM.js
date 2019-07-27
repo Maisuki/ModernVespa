@@ -23,6 +23,7 @@ $(document).ready(function () {
         var models = "";
         var modelsArr = [];
         $('.model').each(function (index, item) {
+            console.log($(item).val());
             modelsArr.push($(item).val().trim());
         });
         modelsArr.sort();

@@ -7,7 +7,6 @@ import common.Global;
 import controller.RefererCheckManager;
 import controller.SNServer;
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "UpdateZombieServlet", urlPatterns = {"/updateZombie"})
 public class UpdateZombieServlet extends HttpServlet {
-
-    private static final String POST_URL = Global.BASE_URL + "/updateZombie";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

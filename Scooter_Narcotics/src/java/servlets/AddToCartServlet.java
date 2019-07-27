@@ -1,6 +1,7 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.Global;
@@ -96,9 +97,9 @@ public class AddToCartServlet extends HttpServlet {
 
         String POST_URL = Global.BASE_URL + "/cartAction";
         String POST_PARAMS = "item=" + productId + "&action=%2B&clientId=" + clientId + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr + "&qty=" + quantity + "&price=" + price;
-        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
 
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        JsonObject obj = result.getAsJsonObject();
         boolean status = obj.get("status").getAsBoolean();
         
         JsonObject resultObj = new JsonObject();

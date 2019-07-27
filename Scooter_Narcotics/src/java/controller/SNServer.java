@@ -14,35 +14,49 @@ import java.net.URL;
 
 public class SNServer {
 
-    public static String sendPOST(String POST_URL, String POST_PARAMS) throws IOException {
-        URL url = new URL(POST_URL);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        // For POST only - START
-        conn.setDoOutput(true);
-        OutputStream os = conn.getOutputStream();
-        os.write(POST_PARAMS.getBytes());
-        os.flush();
-        os.close();
-        // For POST only - END
+    public static JsonElement sendPOST(String POST_URL, String POST_PARAMS) throws IOException {
+        try {
+            URL url = new URL(POST_URL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Accept", "application/json");
+            // For POST only - START
+            conn.setDoOutput(true);
+            OutputStream os = conn.getOutputStream();
+            os.write(POST_PARAMS.getBytes());
+            os.flush();
+            os.close();
+            // For POST only - END
 
-        int responseCode = conn.getResponseCode();
+            int responseCode = conn.getResponseCode();
 
-        System.out.println("POST Response Code :: " + responseCode);
+            System.out.println("POST Response Code :: " + responseCode);
 
-        if (responseCode == HttpURLConnection.HTTP_OK) { //success
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
+            if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "8859_1"));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
 
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                String results = response.toString();
+                if (results.charAt(0) == '[' && results.charAt(results.length() - 1) == ']') {
+                    JsonArray arr = new JsonParser().parse(results).getAsJsonArray();
+                    return arr;
+                } else {
+                    JsonObject obj = new JsonParser().parse(results).getAsJsonObject();
+                    return obj;
+                }
+            } else {
+                System.out.println("POST request not worked");
+                return null;
             }
-            in.close();
-
-            return response.toString();
-        } else {
-            return "Something went wrong! Please contact administrator!";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 
@@ -50,8 +64,8 @@ public class SNServer {
         try {
             String POST_URL = "https://www.google.com/recaptcha/api/siteverify";
             String POST_PARAMS = "secret=" + "6LdoxT0UAAAAACL9PZICLM7nl-nXxhMYSGbmKB1o" + "&response=" + payload;
-            String result = sendPOST(POST_URL, POST_PARAMS);
-            JsonObject o = new JsonParser().parse(result).getAsJsonObject();
+            JsonElement result = sendPOST(POST_URL, POST_PARAMS);
+            JsonObject o = result.getAsJsonObject();
             boolean status = o.get("success").getAsBoolean();
             return status;
         } catch (IOException e) {
@@ -63,8 +77,8 @@ public class SNServer {
         try {
             String POST_URL = Global.BASE_URL + "/verifyUser";
             String POST_PARAMS = "email=" + email;
-            String result = sendPOST(POST_URL, POST_PARAMS);
-            JsonObject response = new JsonParser().parse(result).getAsJsonObject();
+            JsonElement result = sendPOST(POST_URL, POST_PARAMS);
+            JsonObject response = result.getAsJsonObject();
             return response;
         } catch (IOException e) {
             JsonObject response = new JsonObject();
@@ -78,8 +92,8 @@ public class SNServer {
         try {
             String POST_URL = Global.BASE_URL + "/verifyKey";
             String POST_PARAMS = "key=" + key;
-            String result = sendPOST(POST_URL, POST_PARAMS);
-            JsonObject response = new JsonParser().parse(result).getAsJsonObject();
+            JsonElement result = sendPOST(POST_URL, POST_PARAMS);
+            JsonObject response = result.getAsJsonObject();
             return response;
         } catch (IOException e) {
             JsonObject response = new JsonObject();
@@ -95,10 +109,11 @@ public class SNServer {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
+            conn.setRequestProperty("Content-Type", "text/html;charset=iso-8859-1");
             int responseCode = conn.getResponseCode();
             System.out.println("GET Response Code :: " + responseCode);
             if (responseCode == HttpURLConnection.HTTP_OK) { // success
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "8859_1"));
                 String inputLine;
                 StringBuilder response = new StringBuilder();
 
@@ -110,8 +125,7 @@ public class SNServer {
                 if (results.charAt(0) == '[' && results.charAt(results.length() - 1) == ']') {
                     JsonArray arr = new JsonParser().parse(results).getAsJsonArray();
                     return arr;
-                }
-                else {
+                } else {
                     JsonObject obj = new JsonParser().parse(results).getAsJsonObject();
                     return obj;
                 }

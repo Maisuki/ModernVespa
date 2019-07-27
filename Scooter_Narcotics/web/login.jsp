@@ -102,7 +102,7 @@
                                     <font color="black">${successMsg}</font>
                                     <input type="hidden" name="page" value="${param.page}">
                                     <br><br>
-                                    <div class="input"><input type="text" id="loginUsername" name="username" placeholder="Username" value="${username}"><i id="loginUsernameIcon" class="fa fa-envelope"></i></div>
+                                    <div class="input"><input type="email" id="loginEmail" name="email" placeholder="Email" value="${email}"><i id="loginEmailIcon" class="fa fa-envelope"></i></div>
                                     <div class="input"><input type="password" id="loginPassword" name="password" placeholder="Password" value="${password}"><i id="loginPasswordIcon" class="fa fa-lock"></i></div>
                                     <label class="checkbox"><input type="checkbox"><i class="fa fa-check"></i>Remember me</label>
                                     <br>

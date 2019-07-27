@@ -132,14 +132,21 @@
                                         <input type="email" class="regFields" id="email" name="email" placeholder="Your Email" value='${email}' required>
                                         <i class="fa fa-envelope"></i>
                                     </div>
+                                    <%--
                                     <div>
                                         The (Optional) Username and Password fields below are for non facebook and google login:
                                     </div>
+                                    --%>
+                                    <div>
+                                        The (Optional) Password fields below are for non facebook and google login:
+                                    </div>
                                     <br/>
+                                    <%--
                                     <div class="input">
                                         <input type="text" class="regFields" id="username" name="username" placeholder="Your Username (Optional)" value='${username}'>
                                         <i class="fa fa-envelope"></i>
                                     </div>
+                                    --%>
                                     <div class="input">
                                         <input type="password" class="regFields" id="password" name="password" placeholder="Password (Optional)">
                                         <i class="fa fa-lock"></i>

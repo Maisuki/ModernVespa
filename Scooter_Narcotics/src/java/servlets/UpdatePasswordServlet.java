@@ -1,6 +1,7 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.Global;
@@ -75,9 +76,9 @@ public class UpdatePasswordServlet extends HttpServlet {
 
         String POST_URL = Global.BASE_URL + "/resetPassword";
         String POST_PARAMS = "username=" + username + "&password=" + password + "&cfmPassword=" + cfmPassword;
-        String result = controller.SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonElement result = controller.SNServer.sendPOST(POST_URL, POST_PARAMS);
 
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        JsonObject obj = result.getAsJsonObject();
         response.getWriter().println(new Gson().toJson(obj));
         /*
         boolean status = obj.get("status").getAsBoolean();

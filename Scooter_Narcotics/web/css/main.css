@@ -607,7 +607,7 @@ label.error {
         width: 550px;
     }
     
-    #modalusername, #modalpassword, #snLogin, #snRegister, #signin-button {
+    #modalusername, #modalemail, #modalpassword, #snLogin, #snRegister, #signin-button {
         width: 70%;
     }
     
@@ -615,11 +615,11 @@ label.error {
         width: 64%;
     }
     
-    #loginUsername, #loginPassword {
+    #loginUsername, #loginPassword, #loginEmail {
         width: 90%;
     }
     
-    #loginUsernameIcon, #loginPasswordIcon {
+    #loginUsernameIcon, #loginPasswordIcon, #loginEmailIcon {
         right: 10%;
     }
     
@@ -762,11 +762,11 @@ label.error {
 }
 
 @media screen and (max-width: 800px) {    
-    #loginUsername, #loginPassword {
+    #loginUsername, #loginPassword, #loginEmail {
         width: 100%;
     }
     
-    #loginUsernameIcon, #loginPasswordIcon {
+    #loginUsernameIcon, #loginPasswordIcon, #loginEmailIcon {
         right: 0;
     }
     
@@ -1136,7 +1136,7 @@ label.error {
 }
 
 @media screen and (max-width: 430px) {
-    #modalusername, #modalpassword, #snLogin, #snRegister, #signin-button {
+    #modalusername, #modalemail, #modalpassword, #snLogin, #snRegister, #signin-button {
         width: 100%;
     }
     
@@ -13828,4 +13828,63 @@ noindex:-o-prefocus, .main-nav { /* opera hack */
     padding-left: 10px;
     margin-left: 12px;
     text-align: left;
+}
+
+div#wave {
+    display: none;
+    position: relative;
+    margin-top: 20px;
+    text-align: center;
+    width: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 3px;
+    background: #fff;
+    animation: wave 1.3s linear infinite;
+}
+
+.dot:nth-child(2) {
+    animation-delay: -1.1s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: -0.9s;
+}
+
+@keyframes wave {
+    0%, 60%, 100% {
+        transform: initial;
+    }
+
+    30% {
+        transform: translateY(-15px);
+    }
+}
+
+#loadContainer {
+    display: block;
+    text-align: center;
+    margin: 20px;
+    width: 100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#end {
+    text-align: center;
+    margin: 20px;
+    width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dashes {
+    display: none;
 }

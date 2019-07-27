@@ -42,6 +42,8 @@ public class AddBMServlet extends HttpServlet {
             return;
         }
         
+        brand = brand.trim();
+        
         String POST_URL = Global.BASE_URL + "/addBrand";
         String POST_PARAMS = "brandName=" + brand + "&modelList=" + models;
         

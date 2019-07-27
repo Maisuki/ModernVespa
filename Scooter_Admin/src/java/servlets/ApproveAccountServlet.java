@@ -35,7 +35,6 @@ public class ApproveAccountServlet extends HttpServlet {
 //        String username = request.getParameter("username");
         
         if (email == null || email.trim().length() == 0) {
-//                username == null || username.trim().length() == 0) {
             JsonObject error = new JsonObject();
             error.addProperty("status", false);
             error.addProperty("message", "email is required!");
@@ -44,7 +43,6 @@ public class ApproveAccountServlet extends HttpServlet {
         }
         
         String POST_URL = Global.BASE_URL + "/approveAccount";
-//        String POST_PARAMS = "email=" + email + "&username=" + username;
         String POST_PARAMS = "email=" + email;
         
         String result = SNServer.sendPOST(POST_URL, POST_PARAMS);

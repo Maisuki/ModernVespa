@@ -33,9 +33,6 @@ public class RetrieveAllBNMServlet extends HttpServlet {
         
         String GET_URL = Global.BASE_URL + "/bnm";
         String result = SNServer.sendGET(GET_URL);
-        result = result.replaceAll("´", "%C2%B4");
-        result = result.replaceAll("²", "%C2%B2");
-        result = result.replaceAll("³", "%C2%B3");
         
         JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
         

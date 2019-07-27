@@ -21,6 +21,7 @@ $(document).ready(function() {
             return;
         }
         
+        catName = catName.trim();
         sn.updateCategory(getUrlParameter('id'), catName);
     });
 });

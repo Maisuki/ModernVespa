@@ -7,6 +7,7 @@ import common.Global;
 import controller.RefererCheckManager;
 import controller.SNServer;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -87,13 +88,67 @@ public class UpdateProductServlet extends HttpServlet {
             featuredProduct = true;
         }
         
+        description = description.replace("&", "%26");
+        category = category.replace("&", "%26");
+
+        if (productName.equals("")) {
+            productName = "Product Name coming soon...";
+        }
+        if (partNo.equals("")) {
+            partNo = "Part Number coming soon...";
+        }
+        if (quantity.equals("")) {
+            quantity = "0";
+        }
+        if (foreignprice.equals("")) {
+            foreignprice = "0.00";
+        }
+        if (localprice.equals("")) {
+            localprice = "0.00";
+        }
+        if (weight.equals("")) {
+            weight = "0.00";
+        }
+        if (sourceOfSupply.equals("")) {
+            sourceOfSupply = "Source of Supply coming soon...";
+        }
+        if (secSourceOfSupply.equals("")) {
+            secSourceOfSupply = "Secondary Source of Supply coming soon...";
+        }
+        if (costOfProduct.equals("")) {
+            costOfProduct = "0.00";
+        }
+        if (description == null || description.equals("")) {
+            description = "The product description for this item is still in progress...";
+        }
+        
+        if (tier1MarkupPercentage.equals("")) {
+            tier1MarkupPercentage = "0.00";
+        }
+        if (tier2MarkupPercentage.equals("")) {
+            tier2MarkupPercentage = "0.00";
+        }
+        if (tier3MarkupPercentage.equals("")) {
+            tier3MarkupPercentage = "0.00";
+        }
+        if (tier4MarkupPercentage.equals("")) {
+            tier4MarkupPercentage = "0.00";
+        }
+        
+        if (shippingCosts.equals("")) {
+            shippingCosts = "0.0";
+        }
+        
         String POST_URL = Global.BASE_URL + "/updateProduct";
-        String POST_PARAMS = "pName=" + productName + "&partNo=" + partNo + "&pCategory=" + category + "&pQty=" + quantity
+        Charset u8 = Charset.forName("UTF-8");
+        Charset l1 = Charset.forName("ISO-8859-1");
+        String utf8ProductName = u8.decode(l1.encode(productName)).toString();
+        String utf8Desc = u8.decode(l1.encode(description)).toString();
+        
+        String POST_PARAMS = "pName=" + utf8ProductName + "&partNo=" + partNo + "&pCategory=" + category + "&pQty=" + quantity
                 + "&pFMPrice=" + foreignprice + "&pLMPrice=" + localprice + "&pWeight=" + weight + "&sos=" + sourceOfSupply
-                + "&ssos=" + secSourceOfSupply + "&cop=" + costOfProduct + "&pDesc=" + description + "&pFeatured=" + featuredProduct
-                + "&pBrand=" + productBrand 
-//                + "&tier1discountedprice=" + tier1DiscountedPrice + "&tier2discountedprice=" + tier2DiscountedPrice
-//                + "&tier3discountedprice=" + tier3DiscountedPrice + "&tier4discountedprice=" + tier4DiscountedPrice
+                + "&ssos=" + secSourceOfSupply + "&cop=" + costOfProduct + "&pDesc=" + utf8Desc + "&pFeatured=" + featuredProduct
+                + "&pBrand=" + productBrand
                 + "&tier1markup=" + tier1MarkupPercentage + "&tier2markup=" + tier2MarkupPercentage
                 + "&tier3markup=" + tier3MarkupPercentage + "&tier4markup=" + tier4MarkupPercentage + "&gst=" + gst
                 + "&shippingcosts=" + shippingCosts + "&pId=" + productId + "&action=text";

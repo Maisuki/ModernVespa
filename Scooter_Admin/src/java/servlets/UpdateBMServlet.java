@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "UpdateBMServlet", urlPatterns = {"/updateBM"})
 public class UpdateBMServlet extends HttpServlet {
 
-    private static final String POST_URL = Global.BASE_URL + "/updateBrand";
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -46,6 +44,8 @@ public class UpdateBMServlet extends HttpServlet {
             return;
         }
         
+        brand = brand.trim();
+        
         String POST_URL = Global.BASE_URL + "/updateBrand";
         String POST_PARAMS = "brandId=" + id + "&brandName=" + brand + "&modelList=" + models;
         
@@ -53,33 +53,6 @@ public class UpdateBMServlet extends HttpServlet {
         JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
         
         response.getWriter().println(new Gson().toJson(obj));
-        
-        
-//        String brand = request.getParameter("brand");
-//        String[] modelArr = request.getParameterValues("model");
-//        String id = request.getParameter("id");
-//        String modelStr = "";
-//
-//        if (brand == null || brand.trim().isEmpty()) {
-//            String message = "Please enter Brand";
-//            request.setAttribute("message", message);
-//            return;
-//        }
-//
-//        if (modelArr != null) {
-//            for (String model : modelArr) {
-//                modelStr += model + "~";
-//            }
-//            modelStr = modelStr.substring(0, modelStr.length() - 1);
-//        }
-//        
-//        String POST_PARAMS = "brandId=" + id + "&brandName=" + brand + "&modelList=" + modelStr;
-//        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-//        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
-//        boolean status = obj.get("status").getAsBoolean();
-//        if (status) {
-//            request.setAttribute("successMsg", "Successfully added");
-//            response.sendRedirect("BM.jsp");
-//        }
     }
+    
 }

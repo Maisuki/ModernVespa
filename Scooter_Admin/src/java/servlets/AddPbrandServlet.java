@@ -47,14 +47,14 @@ public class AddPbrandServlet extends HttpServlet {
             return;
         }
         
-        String pbrand = request.getParameter("pbrand");
+        String pBrand = request.getParameter("pbrand");
         String tier1Discount = request.getParameter("t1bd");
         String tier2Discount = request.getParameter("t2bd");
         String tier3Discount = request.getParameter("t3bd");
         String tier4Discount = request.getParameter("t4bd");
         Part imagePart = request.getPart("pbrandImage");
         
-        if (pbrand == null || pbrand.trim().isEmpty()) {
+        if (pBrand == null || pBrand.trim().isEmpty()) {
             JsonObject error = new JsonObject();
             error.addProperty("status", false);
             error.addProperty("message", "Product Brand name is required!");
@@ -75,8 +75,10 @@ public class AddPbrandServlet extends HttpServlet {
             tier4Discount = "0";
         }
         
+        pBrand = pBrand.trim();
+        
         String POST_URL = Global.BASE_URL + "/addProductBrand";
-        String POST_PARAMS = "name=" + pbrand + "&tier1discountrate=" + tier1Discount + "&tier2discountrate=" + tier2Discount + "&tier3discountrate=" + tier3Discount
+        String POST_PARAMS = "name=" + pBrand + "&tier1discountrate=" + tier1Discount + "&tier2discountrate=" + tier2Discount + "&tier3discountrate=" + tier3Discount
                 + "&tier4discountrate=" + tier4Discount;
         
         String result = SNServer.sendPOST(POST_URL, POST_PARAMS);

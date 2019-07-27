@@ -1,6 +1,7 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.Global;
@@ -49,8 +50,8 @@ public class NotepadToCartServlet extends HttpServlet {
         
         String POST_URL = Global.BASE_URL + "/npToCart";
         String POST_PARAMS = "clientId=" + clientId + "&npId=" + notepadId;
-        String results = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        JsonObject jsonResults = new JsonParser().parse(results).getAsJsonObject();
+        JsonElement results = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonObject jsonResults = results.getAsJsonObject();
         boolean status = jsonResults.get("status").getAsBoolean();
         if (!status) {
             String message = jsonResults.get("message").getAsString();

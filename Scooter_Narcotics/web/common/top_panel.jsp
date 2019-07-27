@@ -62,7 +62,7 @@
                             <font id="errMsg" color="red"></font>
                         </div>
                         <div class="modalElem" align="center">
-                            <input type="text" class="form-control" id="modalusername" name="username" placeholder="Username">
+                            <input type="text" class="form-control" id="modalemail" name="email" placeholder="Email">
                         </div>
                         <div class="modalElem" align="center">
                             <input type="password" class="form-control" id="modalpassword" name="password" placeholder="Password">
@@ -130,15 +130,6 @@
         </ul>
         <!--/ top header details -->
     </div>
-    <%-- if (userSession == null) {%>
-    <div class="grid-row">
-        <ul class="account-details grid-col">
-            <li><a style="<%=marginTop%>margin-right: 20px;text-decoration: underline;" href="registration.jsp" class="cart-summary"><i class="fa fa-sign-in"></i>Register Now</a></li>
-            <li><a style="<%=marginTop%>margin-right: 20px;text-decoration: underline;" href="forget-password.jsp" class="cart-summary"><i class="fa fa-key"></i>Forget Password</a></li>
-            <li><a style="<%=marginTop%>text-decoration: underline;" href="shop-cart.jsp" class="cart-summary"><i class="fa fa-shopping-cart"></i>View Cart</a></li>
-        </ul>
-    </div>
-    <% } --%>
 </div>
 <!--/ page header top -->
 

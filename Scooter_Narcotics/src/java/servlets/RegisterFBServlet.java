@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.Global;
@@ -96,8 +97,8 @@ public class RegisterFBServlet extends HttpServlet {
                 + "&lname=" + request.getParameter("lname") + "&email=" + request.getParameter("email") + "&billAddress=" + addressJson
                 + "&contact=" + request.getParameter("contact") + "&role=" + request.getParameterValues("role")[0];
 
-        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonObject obj = result.getAsJsonObject();
         
         boolean status = obj.get("status").getAsBoolean();
 

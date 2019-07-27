@@ -54,7 +54,7 @@ var sn = {
         return ($.parseJSON(result));
     },
     
-    /***** METHODS FOR products.jsp *****/
+    /***** METHODS FOR login.jsp *****/
     login: async function(username, password, zombie, page) {
         var self = this;
         var result = await self.retrieveWsData('POST', 'login', {username: username, password: password, isZombie: zombie});
@@ -236,13 +236,12 @@ var sn = {
                 }
                 if (id !== pId) {
                     var shortenedName = name.length > 40 ? name.substring(0, 40) + "..." : name;
-                    productPanel += "<div id='" + index + "' onclick='sn.clickActions(this);' class='form-group col-sm-4 col-xs-12'>";
+                    productPanel += "<div style='height: 330px;' id='" + index + "' onclick='sn.clickActions(this);' class='form-group col-sm-4 col-xs-12'>";
                     productPanel += "<span class='pName' style='display: none;'>" + name + "</span>";
                     productPanel += "<label style='display: none;'>" + id + "</label>";
                     productPanel += "<img class='productImg' align='center' src='" + images + "' width='250' height='200' alt />";
                     productPanel += "<h5 class='productName' title='" + name + "'>" + shortenedName + "</h5>";
                     productPanel += "<h5 class='productCat' style='height: 30px;'><b>Category: </b>" + cat + "</h5>";
-                    console.log("pBrand: >>> \"" + productBrand + "\"");
                     if (productBrand.trim() === "") {
                         productPanel += "<h5 class='productBrand' style='height: 30px;'><b>Product Brand: </b>Not Specified</h5>";
                     }
@@ -270,7 +269,7 @@ var sn = {
         var id = element.id;
         var bg = $("#" + id).css("background-color");
         var currentSelected = $("#selectedProducts").val();
-        var productId = $("#" + id).children().first().text();
+        var productId = $("#" + id).children("label").first().text();
         if (bg === "rgba(0, 0, 0, 0)" || bg === "rgb(0, 0, 0)" || bg === "rgb(255, 255, 255)") {
             $("#" + id).css("background-color", "rgb(244, 146, 65)");
             
@@ -296,6 +295,7 @@ var sn = {
     /***** METHODS FOR updateProduct.jsp *****/
     retrieveProduct: async function(pId){
         var self = this;
+        await self.retrieveRates();
         var result = await self.retrieveWsData('POST', 'retrieveProduct', {productId: pId});
         if (result.status) {
             var product = result.products;
@@ -312,7 +312,6 @@ var sn = {
 
 
             $('#desc').val(product.desc);
-
 
             $('#productCat').val(product.cat);
 
@@ -599,7 +598,7 @@ var sn = {
                 if (id !== pId) {
                     var bgColor = isSelected ? "rgb(244, 146, 65)" : "white";
                     var shortenedName = name.length > 40 ? name.substring(0, 40) + "..." : name;
-                    productPanel += "<div style='background-color: " + bgColor + "' id='" + index + "' onclick='sn.clickActions(this);' class='form-group col-sm-4 col-xs-12'>";
+                    productPanel += "<div style='height: 330px; background-color: " + bgColor + "' id='" + index + "' onclick='sn.clickActions(this);' class='form-group col-sm-4 col-xs-12'>";
                     productPanel += "<span class='pName' style='display: none;'>" + name + "</span>";
                     productPanel += "<label style='display: none;'>" + id + "</label>";
                     productPanel += "<img class='productImg' align='center' src='" + images + "' width='250' height='200' alt />";
@@ -2887,7 +2886,7 @@ var sn = {
     
     markupSelection: function(index, markupPercentageValue) {     
 //        var costOfProduct = parseFloat($('#copsgd').val());
-        var costOfProduct = parseFloat($('#costwGstSgd').val());
+        var costOfProduct = parseFloat($('#costwGstSgd').val()); // 136.75
         if (markupPercentageValue === "") {
             if (index === 1) {
                 $('#tier1markupprice').val(costOfProduct.toFixed(2));
@@ -2907,19 +2906,19 @@ var sn = {
             }
             return;
         }
-        markupPercentageValue = parseInt(markupPercentageValue);
-        var markupPercentage = 1 + (Math.ceil(markupPercentageValue) / 100.0);
-        var retailPrice = parseFloat($('#localsgd').val());
+        markupPercentageValue = parseInt(markupPercentageValue); // 30, 35
+        var markupPercentage = 1 + (Math.ceil(markupPercentageValue) / 100.0); // 1.3
+        var retailPrice = parseFloat($('#localsgd').val()); // 186.91
         
         // Calculate Markup for Tier [index]
-        var markup = costOfProduct * markupPercentage;
+        var markup = costOfProduct * markupPercentage; // 177.775, 184.6125
         
         // Calculate Discount for Tier [index]
-        var discount = (retailPrice - parseFloat(markup)) / retailPrice * 100.0;
+        var discount = (retailPrice - parseFloat(markup)) / retailPrice * 100.0; // 4.88, 2.29
         
         if (index === 1) {
             $('#tier1markupprice').val(markup.toFixed(2));
-            $('#tier1discount').val(discount.toFixed(2));
+            $('#tier1discount').val(discount.toFixed(2) < 0.00 ? 0.00 : discount.toFixed(2));
             
             $('#markuptier2').empty();
             $('#markuptier2').append("<option value=''>Select Value</option>");
@@ -2930,7 +2929,7 @@ var sn = {
         }
         else if (index === 2) {
             $('#tier2markupprice').val(markup.toFixed(2));
-            $('#tier2discount').val(discount.toFixed(2));
+            $('#tier2discount').val(discount.toFixed(2) < 0.00 ? 0.00 : discount.toFixed(2));
             
             $('#markuptier3').empty();
             $('#markuptier3').append("<option value=''>Select Value</option>");
@@ -2941,7 +2940,7 @@ var sn = {
         }
         else if (index === 3) {
             $('#tier3markupprice').val(markup.toFixed(2));
-            $('#tier3discount').val(discount.toFixed(2));
+            $('#tier3discount').val(discount.toFixed(2) < 0.00 ? 0.00 : discount.toFixed(2));
             
             $('#markuptier4').empty();
             $('#markuptier4').append("<option value=''>Select Value</option>");
@@ -2952,7 +2951,7 @@ var sn = {
         }
         else if (index === 4) {
             $('#tier4markupprice').val(markup.toFixed(2));
-            $('#tier4discount').val(discount.toFixed(2));
+            $('#tier4discount').val(discount.toFixed(2) < 0.00 ? 0.00 : discount.toFixed(2));
         }
     },
     

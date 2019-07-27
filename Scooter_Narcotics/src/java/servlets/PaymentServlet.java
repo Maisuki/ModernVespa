@@ -7,6 +7,7 @@ import com.easypost.model.Rate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -174,8 +175,8 @@ public class PaymentServlet extends HttpServlet {
                     additionalInfo = "Order will be process when money is wired into xxx account, Kindly infrom us when the transfer is made";
                 }
                 String POST_URL = Global.BASE_URL + "/payNow";
-                String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-                JsonObject data = new JsonParser().parse(result).getAsJsonObject();
+                JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+                JsonObject data = result.getAsJsonObject();
                 String transactionId = data.get("transactionId").getAsString();
                 request.getSession().setAttribute("transactionId", transactionId);
                 // check for ship half half shipments (only used for shippment that has been splited 
@@ -190,8 +191,8 @@ public class PaymentServlet extends HttpServlet {
                     String forwarder = chosenRate.getCarrier() + "," + chosenRate.getService();
                     String URL = Global.BASE_URL + "/retrieveCartForInvoice";
                     String CART_POST_PARAMS = "clientId=" + clientId + "&cartId=" + cart_id;
-                    String CartResult = SNServer.sendPOST(URL, CART_POST_PARAMS);
-                    JsonObject obj = new JsonParser().parse(CartResult).getAsJsonObject();
+                    JsonElement CartResult = SNServer.sendPOST(URL, CART_POST_PARAMS);
+                    JsonObject obj = CartResult.getAsJsonObject();
                     boolean status = obj.get("status").getAsBoolean();
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
                     if (status) {
@@ -257,10 +258,10 @@ public class PaymentServlet extends HttpServlet {
     private String cartItem(JsonObject cart, String clientId, boolean isShipped, Order shipNowOrder, Order shipLaterOrder, String xForwardedFor, String remoteAddr) throws IOException {
         String POST_URL = Global.BASE_URL + "/verifyAvailability";
         String POST_PARAM = "clientId=" + clientId + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
-        String result = SNServer.sendPOST(POST_URL, POST_PARAM);
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAM);
         JsonArray cartItems = cart.get("cart_items").getAsJsonArray();
         
-        JsonObject data = new JsonParser().parse(result).getAsJsonObject();
+        JsonObject data = result.getAsJsonObject();
         JsonArray shipmentInfo = new JsonArray();
         JsonArray cartItemArr = new JsonArray();
         JsonObject shipmentObj = new JsonObject();

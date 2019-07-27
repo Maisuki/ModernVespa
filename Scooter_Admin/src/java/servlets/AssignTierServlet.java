@@ -31,14 +31,9 @@ public class AssignTierServlet extends HttpServlet {
             return;
         }
         
-//        String email = request.getParameter("email");
-//        String username = request.getParameter("username");
         String clientId = request.getParameter("clientId");
         String tierNo = request.getParameter("tier");
         
-//        if (email == null || email.trim().length() == 0 ||
-//                username == null || username.trim().length() == 0 ||
-//                tierNo == null || tierNo.trim().length() == 0) {
         if (clientId == null || clientId.trim().isEmpty() ||
                 tierNo == null || tierNo.trim().isEmpty()) {
             JsonObject error = new JsonObject();
@@ -49,7 +44,6 @@ public class AssignTierServlet extends HttpServlet {
         }
         
         String POST_URL = Global.BASE_URL + "/setTierInfo";
-//        String POST_PARAMS = "email=" + email + "&username=" + username + "&tierNo=" + tierNo;
         String POST_PARAMS = "clientId=" + clientId + "&tierNo=" + tierNo;
         
         String result = SNServer.sendPOST(POST_URL, POST_PARAMS);

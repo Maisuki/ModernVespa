@@ -1,6 +1,7 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.Global;
@@ -69,8 +70,8 @@ public class WriteReviewServlet extends HttpServlet {
         String POST_URL = Global.BASE_URL + "/writeReview";
         String POST_PARAMS = "productId=" + parameterValue + "&productReviewer=" +  fname;
         POST_PARAMS += "&productReview=" + productReviewComment + "&productRating=" + productReviewRating;
-        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        JsonObject resultObj = new JsonParser().parse(result).getAsJsonObject();
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonObject resultObj = result.getAsJsonObject();
         
         response.getWriter().println(new Gson().toJson(resultObj));
     }

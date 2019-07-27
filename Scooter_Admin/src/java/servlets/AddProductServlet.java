@@ -1,6 +1,5 @@
 package servlets;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -17,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -181,7 +181,6 @@ public class AddProductServlet extends HttpServlet {
                 imagePartList.add(filePart);
             }
         }
-        System.out.println("\"" + description + "\"");
 
         boolean featuredProduct = false;
         if (!checked.equals("")) {
@@ -221,9 +220,9 @@ public class AddProductServlet extends HttpServlet {
         if (description == null || description.equals("")) {
             description = "The product description for this item is still in progress...";
         }
-        if (productBrand.equals("")) {
-            productBrand = "Product Brand coming soon...";
-        }
+//        if (productBrand.equals("")) {
+//            productBrand = "Product Brand coming soon...";
+//        }
 
 
 //        if (tier1DiscountedPrice.equals("")) {
@@ -270,14 +269,19 @@ public class AddProductServlet extends HttpServlet {
         if (shippingCosts.equals("")) {
             shippingCosts = "0.0";
         }
+        
+        Charset u8 = Charset.forName("UTF-8");
+        Charset l1 = Charset.forName("ISO-8859-1");
+        String utf8ProductName = u8.decode(l1.encode(productName)).toString();
+        String utf8Desc = u8.decode(l1.encode(description)).toString();
 
         String POST_URL = Global.BASE_URL + "/addProductPhase1";
-        String POST_PARAMS = "pName=" + productName + "&partNo=" + partNo
+        String POST_PARAMS = "pName=" + utf8ProductName + "&partNo=" + partNo
                 + "&pCategory=" + category + "&pQty=" + quantity
                 + "&pFMPrice=" + foreignprice + "&pLMPrice=" + localprice
                 + "&pWeight=" + weight + "&sos=" + sourceOfSupply
                 + "&ssos=" + secSourceOfSupply + "&cop=" + costOfProduct
-                + "&pDesc=" + description + "&pFeatured=" + featuredProduct
+                + "&pDesc=" + utf8Desc + "&pFeatured=" + featuredProduct
                 + "&pBrand=" + productBrand
                 + "&tier1markup=" + tier1MarkupPercentage
                 + "&tier2markup=" + tier2MarkupPercentage
@@ -285,7 +289,6 @@ public class AddProductServlet extends HttpServlet {
                 + "&tier4markup=" + tier4MarkupPercentage
                 + "&gst=" + gst
                 + "&shippingcosts=" + shippingCosts;
-        System.out.println(POST_PARAMS);
         String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
         JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
         boolean status = obj.get("status").getAsBoolean();

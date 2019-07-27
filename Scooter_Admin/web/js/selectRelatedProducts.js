@@ -27,7 +27,7 @@ function search() {
     
     setTimeout(function () {
         var searchVal = $('#search').val().toLowerCase();
-        $(".form-group").each(async function (index, div) {
+        $(".form-group").each((index, div) => {
             if (searchVal.trim() === "") {
                 $(this).show();
             }

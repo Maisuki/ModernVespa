@@ -15,6 +15,7 @@ import com.easypost.model.Rate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.Global;
@@ -64,9 +65,9 @@ public class ShippingServlet extends HttpServlet {
 
         String POST_URL = Global.BASE_URL + "/retrieveCart";
         String POST_PARAMS = "clientId=" + clientId + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
-        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
         
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        JsonObject obj = result.getAsJsonObject();
         JsonObject toAddress = new JsonObject();
         toAddress.addProperty("name", request.getParameter("toName"));
         toAddress.addProperty("street1", request.getParameter("toAdd1"));
@@ -88,8 +89,8 @@ public class ShippingServlet extends HttpServlet {
 
         POST_URL = Global.BASE_URL + "/verifyAvailability";
         String POST_PARAM = "clientId=" + clientId + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
-        String verifyResult = SNServer.sendPOST(POST_URL, POST_PARAM);
-        JsonObject verifyData = new JsonParser().parse(verifyResult).getAsJsonObject();
+        JsonElement verifyResult = SNServer.sendPOST(POST_URL, POST_PARAM);
+        JsonObject verifyData = verifyResult.getAsJsonObject();
         JsonArray shipmentInfo = new JsonArray();
         JsonArray cartItemArr = new JsonArray();
         JsonObject shipmentObj = new JsonObject();
@@ -254,8 +255,8 @@ public class ShippingServlet extends HttpServlet {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String POST_URL = Global.BASE_URL + "/createOrder";
         String POST_PARAM = "to=" + gson.toJson(toAddress) + "&parcelData=" + gson.toJson(parcel);
-        String result = SNServer.sendPOST(POST_URL, POST_PARAM);
-        JsonObject data = new JsonParser().parse(result).getAsJsonObject();
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAM);
+        JsonObject data = result.getAsJsonObject();
         return data;
     }
 

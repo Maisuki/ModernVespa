@@ -1,5 +1,6 @@
 package servlets;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.Global;
@@ -25,8 +26,8 @@ public class ActivateServlet extends HttpServlet {
             String POST_URL = Global.BASE_URL + "/activateAccount";
             String POST_PARAMS = "email=" + email + "&key=" + key;
             
-            String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-            JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+            JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+            JsonObject obj = result.getAsJsonObject();
             boolean status = obj.get("status").getAsBoolean();
             if (!status) {
                 response.getWriter().println("Invalid activation details provided!");

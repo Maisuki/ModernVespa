@@ -1,8 +1,8 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import common.Global;
 import controller.RefererCheckManager;
 import controller.SNServer;
@@ -33,11 +33,11 @@ public class Login2Servlet extends HttpServlet {
             return;
         }
         
-        String username = request.getParameter("username");
+        String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
-            String message = "Username/Password is not filled!";
+        if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
+            String message = "Email/Password is not filled!";
 
             JsonObject errObj = new JsonObject();
             errObj.addProperty("status", false);
@@ -49,16 +49,21 @@ public class Login2Servlet extends HttpServlet {
         String remoteAddr = request.getRemoteAddr();
         String xForwardedFor = request.getHeader("x-forwarded-for");
 
-        String POST_URL = Global.BASE_URL + "/loginv2";
-        String POST_PARAMS = "username=" + username + "&password=" + password + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
-        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        String POST_URL = Global.BASE_URL + "/loginv3";
+        String POST_PARAMS = "email=" + email + "&password=" + password + "&remoteIP=" + xForwardedFor + "&localIP=" + remoteAddr;
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonObject obj = result.getAsJsonObject();
         boolean status = obj.get("status").getAsBoolean();
 
         if (!status) {
             String message = obj.get("message").getAsString();
-            RequestDispatcher view = request.getRequestDispatcher(referer.split("/")[referer.split("/").length - 1]);
-            request.setAttribute("username", username);
+            String url = referer.split("/")[referer.split("/").length - 1];
+            if (url.equals("login2")) {
+                url = "login.jsp";
+            }
+            
+            RequestDispatcher view = request.getRequestDispatcher(url);
+            request.setAttribute("email", email);
             request.setAttribute("password", password);
             request.setAttribute("message", message);
             view.forward(request, response);
@@ -67,7 +72,7 @@ public class Login2Servlet extends HttpServlet {
             JsonObject userObj = obj.get("user").getAsJsonObject();
             String clientId = userObj.get("_id").getAsString();
             String fullName = userObj.get("fname").getAsString() + " " + userObj.get("lname").getAsString();
-            String email = userObj.get("email").getAsString();
+            String email1 = userObj.get("email").getAsString();
             String contact = userObj.get("contact").getAsString();
             String role = userObj.get("role_id").getAsString();
 
@@ -76,7 +81,7 @@ public class Login2Servlet extends HttpServlet {
 
             request.getSession().setAttribute("clientId", clientId);
             session.setAttribute("name", fullName);
-            session.setAttribute("email", email);
+            session.setAttribute("email", email1);
             session.setAttribute("contact", contact);
             session.setAttribute("role", role);
             if (role.equals("909")) {
@@ -89,7 +94,7 @@ public class Login2Servlet extends HttpServlet {
                 return;
             }
             
-            if (referer.contains("login.jsp") || referer.contains("login2")) {
+            if (referer.contains("login.jsp") || referer.contains("login2") || referer.contains("registration.jsp")) {
                 response.sendRedirect("index.jsp");
                 return;
             }

@@ -7,7 +7,6 @@ import common.Global;
 import controller.RefererCheckManager;
 import controller.SNServer;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

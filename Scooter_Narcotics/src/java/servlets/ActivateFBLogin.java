@@ -1,6 +1,7 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.Global;
@@ -44,9 +45,9 @@ public class ActivateFBLogin extends HttpServlet {
 
         String POST_URL = Global.BASE_URL + "/activateFBLogin";
         String POST_PARAMS = "clientId=" + clientId + "&fbId=" + fbId;
-        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
         
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        JsonObject obj = result.getAsJsonObject();
         boolean status = obj.get("status").getAsBoolean();
         if (status) {
             JsonObject user = (JsonObject) request.getSession().getAttribute("user");

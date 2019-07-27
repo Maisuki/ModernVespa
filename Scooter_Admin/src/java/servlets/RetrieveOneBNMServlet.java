@@ -43,9 +43,6 @@ public class RetrieveOneBNMServlet extends HttpServlet {
         String POST_URL = Global.BASE_URL + "/getOneBrand";
         String POST_PARAMS = "brandId=" + brandId;
         String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        result = result.replaceAll("´", "%C2%B4");
-        result = result.replaceAll("²", "%C2%B2");
-        result = result.replaceAll("³", "%C2%B3");
         
         JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
         

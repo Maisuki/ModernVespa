@@ -2,6 +2,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.Global;
@@ -106,15 +107,15 @@ public class UpdateUserDetailsServlet extends HttpServlet {
                 + "&lname=" + lname + "&email=" + email + "&billAddress=" + addressJson
                 + "&contact=" + contact;
 
-        String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonElement result = SNServer.sendPOST(POST_URL, POST_PARAMS);
         
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        JsonObject obj = result.getAsJsonObject();
         boolean status = obj.get("status").getAsBoolean();
         if (status) {
             POST_URL = Global.BASE_URL + "/retrieveUser";
             POST_PARAMS = "clientId=" + clientId;
             result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-            JsonObject resultObj = new JsonParser().parse(result).getAsJsonObject();
+            JsonObject resultObj = result.getAsJsonObject();
 
             JsonObject userObj = resultObj.get("user").getAsJsonObject();
             String fullName = userObj.get("fname").getAsString() + " " + userObj.get("lname").getAsString();

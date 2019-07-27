@@ -159,7 +159,6 @@ function captchaCallback(response) {
     gCaptchaRes = response;
 }
 
-
 $("#fbCheck").change(function () {
     $("#googleCheck").prop("checked", false);
     $("#idFB").val(fbId);

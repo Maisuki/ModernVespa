@@ -4,8 +4,7 @@ var pageNo;
 
 if (typeof page === 'undefined' || page.trim().length === 0) {
     pageNo = 1;
-}
-else {
+} else {
     pageNo = parseInt(page);
 }
 
@@ -26,30 +25,28 @@ $(document).ready(function () {
         var inst = $('[data-remodal-id=modal]').remodal();
         inst.close();
     });
-    
+
     $('#productList').loading({
         stoppable: false,
         message: '',
         theme: ''
     });
-    
+
     if (ccode !== "SGD") {
         document.getElementById("hideService").style.display = 'none';
     }
-
     if (typeof filtercategory !== 'undefined') {
         $("#selectCat").val(filtercategory);
         var cat = filtercategory.replace("%20", " ");
-        cat = cat.replace("%26", "%");
-        $("#categoriesMob").val(cat);
-        $("#categoriesTab").val(cat);
+        cat = cat.replace("%26", "&");
+        $("#selectCat, #selectCat1").val(cat);
     }
 
     if (typeof filterbrand !== 'undefined') {
-        $("#brand").val(filterbrand);
+        $("#brand, #brand1").val(filterbrand);
     }
-    
-    if (typeof filtermodel !== 'undefined') {
+
+    if (typeof filtermodel !== 'undefined' && filterbrand !== "") {
         $.ajax({
             type: 'POST',
             url: 'populateModel',
@@ -63,9 +60,9 @@ $(document).ready(function () {
                 if (e.status === 200) {
                     for (var i = 0; i < data.models.length; i++) {
                         var model = translate(data.models[i]);
-                        $("#models").append("<option style='color:black'>" + model + "</option>");
+                        $("#models, #models1").append("<option style='color:black'>" + model + "</option>");
                     }
-                    $("#models").val(filtermodel);
+                    $("#models, #models1").val(filtermodel);
                 }
             },
             dataType: 'json'
@@ -74,7 +71,6 @@ $(document).ready(function () {
 
     if (typeof filtercategory !== 'undefined' || typeof filterbrand !== 'undefined' || typeof filtermodel !== 'undefined') {
         loadItemWithCat();
-
     } else if (typeof filtersearch !== 'undefined') {
         loadSearchItem();
     } else {
@@ -105,12 +101,12 @@ $(document).ready(function () {
             dataType: 'json'
         });
     });
-    
-    $("#brand1").change(function() {
+
+    $("#brand1").change(function () {
         var brand = $(this).val();
         $("#models1").empty();
         $("#models1").append("<option value='' style='color:black'>Select Model</option>");
-        
+
         $.ajax({
             type: 'POST',
             url: 'populateModel',
@@ -140,20 +136,22 @@ $(document).ready(function () {
     });
 });
 
-var hasExecuted = false;
+var throttle = 50;
+var scrollTimeout;
 
-window.onscroll = function () {
-    if (!hasExecuted) {
-        var maxHeight = $("#page-header-top").height() + $("#page-header-bottom").height()
-                + $("#filter-section").height() + $("#title-section").height()
-                + $("#products-section").height();
-        var pageYOffset = window.pageYOffset;
-        if (pageYOffset / maxHeight >= 0.8) {
-            hasExecuted = true;
-            fetchPage(++pageNo);
+$(window).scroll(function () {
+    if (isScrolledIntoView($("#load"))) {
+        if (!scrollTimeout) {
+            scrollTimeout = setTimeout(function () {
+                fetchPage(++pageNo);
+            }, throttle);
+            
+            $("#load").hide();
+            $("#wave").show();
         }
+        
     }
-};
+});
 
 function fetchPage(page) {
     if (pageNo <= maxPage) {
@@ -167,14 +165,16 @@ function fetchPage(page) {
             loadItem();
         }
     } else {
+//        $("#wave").hide();
+//        $(".dashes").show();
         return;
     }
 }
 
 function loadItemWithCat() {
-    var tempCat = filtercategory.replace("&","%26");
-    var tempBrand = filterbrand.replace("&","%26");
-    var tempModel = filtermodel.replace("&","%26");
+    var tempCat = filtercategory.replace("&", "%26");
+    var tempBrand = filterbrand.replace("&", "%26");
+    var tempModel = filtermodel.replace("&", "%26");
     $.ajax({
         type: 'POST',
         url: "searchService",
@@ -188,7 +188,7 @@ function loadItemWithCat() {
         success: function (data) {},
         complete: function (e, xhr, settings) {
             var rawData = e.responseText;
-            
+
             if (rawData === "Unauthorized access!") {
                 $.toast({
                     heading: 'Error',
@@ -198,10 +198,10 @@ function loadItemWithCat() {
                 });
                 return;
             }
-            
+
             if (e.status === 200) {
                 var data = ($.parseJSON(e.responseText));
-                
+
                 if (data.status) {
                     products = data.products;
 
@@ -220,14 +220,13 @@ function loadItemWithCat() {
 
                         if (ccode === "SGD" && (typeof localprice === 'undefined' || localprice === null || localprice === 0)) {
                             continue;
-                        }
-                        else {
+                        } else {
                             /**** DESKTOP VERSION ****/
-    //                                        var rating = (products[i].rating / 5) * 100;
+                            //                                        var rating = (products[i].rating / 5) * 100;
                             var outputDesktop = "<li>";
                             outputDesktop += "<div class='inner'>";
                             outputDesktop += "<a href='shop-details.jsp?productId=" + pId + "' class='pic'>";
-                            
+
                             if (typeof images !== 'undefined' && images !== null && images instanceof Array && images.length > 0) {
                                 outputDesktop += "<div class='product-image-fixed-size'>";
                                 outputDesktop += "<img src='" + base + "/" + images[0] + "' alt=''>";
@@ -240,20 +239,19 @@ function loadItemWithCat() {
                                 outputDesktop += "</div>";
                             }
 
-                            var translatedprodname = translate(name);
                             var alt = "";
-                            if (translatedprodname.length >= 30) {
-                                alt = translatedprodname.substring(0, 31) + "...";
+                            if (name.length >= 30) {
+                                alt = name.substring(0, 31) + "...";
                             } else {
-                                alt = translatedprodname;
+                                alt = name;
                             }
-                            
+
                             outputDesktop += "<h3 style='height: 40px;'>";
                             outputDesktop += "<a href='shop-details.jsp?productId=" + pId + "'>";
-                            outputDesktop += "<p title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+                            outputDesktop += "<p title='" + name + "' class='limited-text'>" + alt + "</p>";
                             outputDesktop += "</a>";
                             outputDesktop += "</h3>";
-                            outputDesktop += "<p style='height:35px'>" + category + "</p>";
+                            outputDesktop += "<p style='height:35px; margin-right: -5px;'>" + category + "</p>";
 
                             var price = 0;
                             if (ccode === "SGD") {
@@ -276,8 +274,7 @@ function loadItemWithCat() {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var priceWGst = price * gstval;
                                                 price = parseFloat(priceWGst).toFixed(2);
-                                            }
-                                            else {
+                                            } else {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var markup = 1 + (markupPercentage / 100.0);
                                                 shippingCosts = parseFloat(shippingCosts);
@@ -287,8 +284,7 @@ function loadItemWithCat() {
                                             }
                                         }
                                     }
-                                }
-                                else {
+                                } else {
                                     brandDiscount = userObject['discounted_brands_value'];
                                     if (brandList.includes(product['productBrand'])) {
                                         for (var j = 0; j < brandList.length; j++) {
@@ -297,8 +293,7 @@ function loadItemWithCat() {
                                                 break;
                                             }
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         for (var key in products[i]) {
                                             if (key.indexOf("markup") !== -1 && key.indexOf("tier") !== -1 && key.indexOf(tier) !== -1) {
                                                 var markupPercentage = parseInt(product[key]);
@@ -306,8 +301,7 @@ function loadItemWithCat() {
                                                     var gstval = 1 + (parseInt(gst)) / 100.0;
                                                     var priceWGst = price * gstval;
                                                     price = parseFloat(priceWGst).toFixed(2);
-                                                }
-                                                else {
+                                                } else {
                                                     var gstval = 1 + (parseInt(gst)) / 100.0;
                                                     var markup = 1 + (markupPercentage / 100.0);
                                                     shippingCosts = parseFloat(shippingCosts);
@@ -319,7 +313,7 @@ function loadItemWithCat() {
                                         }
                                     }
                                 }
-                                
+
                                 if (initialPrice > price) {
                                     outputDesktop += "<span style='font-size:10px'>";
                                     outputDesktop += "MRSP: <strike>" + ccode + " " + initialPrice + "</strike>";
@@ -328,8 +322,7 @@ function loadItemWithCat() {
                                     outputDesktop += "</br>";
                                     outputDesktop += "<span style='font-size:15px'>Discount: " + (((initialPrice - price) / initialPrice) * 100).toFixed(2) + "%</span>";
                                     outputDesktop += "</div>";
-                                }
-                                else {
+                                } else {
                                     outputDesktop += "<span style='font-size:10px'>";
                                     outputDesktop += "MRSP: <strike>" + ccode + " " + price + "</strike>";
                                     outputDesktop += "</span>";
@@ -338,9 +331,8 @@ function loadItemWithCat() {
                                     outputDesktop += "<span style='font-size:15px'>Discount: " + (((price - price) / price) * 100).toFixed(2) + "%</span>";
                                     outputDesktop += "</div>";
                                 }
-                                
-                            }
-                            else {
+
+                            } else {
                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                 var priceWGst = price * gstval;
                                 price = parseFloat(priceWGst).toFixed(2);
@@ -360,20 +352,19 @@ function loadItemWithCat() {
                         }
                         $("#productGridDesktop").append(outputDesktop);
                         /**** DESKTOP VERSION ****/
-                        
+
                         /**** MOBILE VERSION ****/
                         var position = isLeft ? "half-left" : "half-right";
                         var outputMobile = "<li class='" + position + "'>";
                         outputMobile += "<a href='shop-details.jsp?productId=" + pId + "' class='pic'>";
                         if (typeof images !== 'undefined' && images !== null && images instanceof Array && images.length > 0) {
-                            var margin = isLeft ? "margin-left: -21px;" : "margin: 0;";
-                            outputMobile += "<img style='" + margin + "' src='" + base + "/" + images[0] + "' width='150px' height='150px' alt=''>";
+                            var margin = isLeft ? "margin-left: -10px;" : "margin: 0;";
+                            outputMobile += "<img style='" + margin + "' src='" + base + "/" + images[0] + "' width='120' height='80' alt=''>";
                             outputMobile += "</a>";
-                        }
-                        else {
+                        } else {
 //                            outputMobile += "<div class='product-image-fixed-size'>";
-                            var margin = isLeft ? "margin-left: -21px;" : "margin: 0;";
-                            outputMobile += "<img style='" + margin + "' src='img/coming_soon.jpg' width='150px' height='150px' alt=''>";
+                            var margin = isLeft ? "margin-left: -10px;" : "margin: 0;";
+                            outputMobile += "<img style='" + margin + "' src='img/coming_soon.jpg' width='120' height='80' alt=''>";
                             outputMobile += "</a>";
 //                            outputMobile += "</div>";
                         }
@@ -381,23 +372,23 @@ function loadItemWithCat() {
                         outputMobile += "<h3 style='color:#fff'>";
                         outputMobile += "<a href='shop-details.jsp?productId=" + pId + "'>";
                         var margin = isLeft ? "margin-left: -30px;" : "margin-left: -5px;";
-                        outputMobile += "<p style='height: 80px; width: 150px; " + margin + " text-align: center;' title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+//                        outputMobile += "<p style='height: 80px; width: 150px; " + margin + " text-align: center;' title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+                        outputMobile += "<p style='height: 80px; width: 150px; " + margin + " text-align: center;' title='" + name + "' class='limited-text'>" + alt + "</p>";
                         outputMobile += "</a>";
                         outputMobile += "</h3>";
 //                        outputMobile += "<p style='height:30px'>" + category + "</p>";
-                        
+
                         price = 0;
                         if (ccode === "SGD") {
                             price = parseFloat(localprice).toFixed(2);
-                        }
-                        else {
+                        } else {
                             price = parseFloat(foreignprice).toFixed(2);
                         }
-                        
+
                         if (role === dealer) {
-                            margin = isLeft ? "margin-left: -25px;" : "";
+                            margin = isLeft ? "margin-left: -30px;" : "";
                             outputMobile += "<div class='price' style='" + margin + " width: 150px; text-align: center;'>";
-                            
+
                             var initialPrice = price;
                             var brandList = userObject['discounted_brands'];
 
@@ -409,8 +400,7 @@ function loadItemWithCat() {
                                             var gstval = 1 + (parseInt(gst)) / 100.0;
                                             var priceWGst = price * gstval;
                                             price = parseFloat(priceWGst).toFixed(2);
-                                        }
-                                        else {
+                                        } else {
                                             var gstval = 1 + (parseInt(gst)) / 100.0;
                                             var markup = 1 + (markupPercentage / 100.0);
                                             shippingCosts = parseFloat(shippingCosts);
@@ -420,8 +410,7 @@ function loadItemWithCat() {
                                         }
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 brandDiscount = userObject['discounted_brands_value'];
                                 if (brandList.includes(product['productBrand'])) {
                                     for (var j = 0; j < brandList.length; j++) {
@@ -430,8 +419,7 @@ function loadItemWithCat() {
                                             break;
                                         }
                                     }
-                                }
-                                else {
+                                } else {
                                     for (var key in products[i]) {
                                         if (key.indexOf("markup") !== -1 && key.indexOf("tier") !== -1 && key.indexOf(tier) !== -1) {
                                             var markupPercentage = parseInt(product[key]);
@@ -439,8 +427,7 @@ function loadItemWithCat() {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var priceWGst = price * gstval;
                                                 price = parseFloat(priceWGst).toFixed(2);
-                                            }
-                                            else {
+                                            } else {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var markup = 1 + (markupPercentage / 100.0);
                                                 shippingCosts = parseFloat(shippingCosts);
@@ -452,7 +439,7 @@ function loadItemWithCat() {
                                     }
                                 }
                             }
-                            
+
                             if (initialPrice > price) {
                                 outputMobile += "<span style='font-size:10px'>";
                                 outputMobile += "MRSP: <strike>" + ccode + " " + initialPrice + "</strike>";
@@ -461,8 +448,7 @@ function loadItemWithCat() {
                                 outputMobile += "</br>";
                                 outputMobile += "<span style='font-size:15px'>Discount: " + (((initialPrice - price) / initialPrice) * 100).toFixed(2) + "%</span>";
                                 outputMobile += "</div>";
-                            }
-                            else {
+                            } else {
                                 outputMobile += "<span style='font-size:10px'>";
                                 outputMobile += "MRSP: <strike>" + ccode + " " + price + "</strike>";
                                 outputMobile += "</span>";
@@ -471,44 +457,54 @@ function loadItemWithCat() {
                                 outputMobile += "<span style='font-size:15px'>Discount: " + (((price - price) / price) * 100).toFixed(2) + "%</span>";
                                 outputMobile += "</div>";
                             }
-                        }
-                        else {
+                        } else {
                             margin = isLeft ? "margin-left: -25px;" : "";
                             var gstval = 1 + (parseInt(gst)) / 100.0;
                             var priceWGst = price * gstval;
                             price = parseFloat(priceWGst).toFixed(2);
                             outputMobile += "<div class='price' style='" + margin + " width: 150px; text-align: center;'>" + ccode + " " + price + "</div>";
                         }
-                        
+
                         margin = isLeft ? "margin-left: -25px;" : "margin-left: 0px; margin-right: -15px;";
                         outputMobile += "<div style='" + margin + "' class='actions'>";
-                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + translatedprodname + "\", \"" + pId + "\", " + price + ")'>";
+//                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + translatedprodname + "\", \"" + pId + "\", " + price + ")'>";
+                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + name + "\", \"" + pId + "\", " + price + ")'>";
                         outputMobile += "<i class='fa fa-shopping-cart'></i>";
                         outputMobile += "Add to cart";
                         outputMobile += "</a>";
                         outputMobile += "</div>";
                         outputMobile += "</div>";
-                        
+
                         outputMobile += "</li>";
                         $("#productGridMobile").append(outputMobile);
                         isLeft = !isLeft;
                         /**** MOBILE VERSION ****/
                     }
                     maxPage = data.totalPages;
-                }
-                else {
+                } else {
                     $("#productGridDesktop").append("<span style='color:'#fff> " + data.message + "</span>");
                     $("#productGridMobile").append("<span style='color:'#fff> " + data.message + "</span>");
                 }
-            }
-            else {
+            } else {
                 $("#productGridDesktop").append("<span style='color:'#fff>Error: Please try again</span>");
                 $("#productGridMobile").append("<span style='color:'#fff>Error: Please try again</span>");
             }
             
+            if (maxPage > pageNo) {
+                $("#load").show();
+                $("#wave").hide();
+                scrollTimeout = null;
+            }
+            else {
+                $("#wave").hide();
+                $(".dashes").show();
+            }
+
             $('#productList').loading('stop');
-            
-            hasExecuted = false;
+
+//            setTimeout(() => {
+//                hasExecuted = false;
+//            }, 2000);
         },
         dataType: 'json'
     });
@@ -527,7 +523,7 @@ function loadSearchItem() {
         success: function (data) {},
         complete: function (e, xhr, settings) {
             var rawData = e.responseText;
-            
+
             if (rawData === "Unauthorized access!") {
                 $.toast({
                     heading: 'Error',
@@ -537,10 +533,10 @@ function loadSearchItem() {
                 });
                 return;
             }
-            
+
             if (e.status === 200) {
                 var data = ($.parseJSON(e.responseText));
-                
+
                 if (data.status) {
                     products = data.products;
 
@@ -559,14 +555,13 @@ function loadSearchItem() {
 
                         if (ccode === "SGD" && (typeof localprice === 'undefined' || localprice === null || localprice === 0)) {
                             continue;
-                        }
-                        else {
+                        } else {
                             /**** DESKTOP VERSION ****/
-    //                                        var rating = (products[i].rating / 5) * 100;
+                            //                      var rating = (products[i].rating / 5) * 100;
                             var outputDesktop = "<li>";
                             outputDesktop += "<div class='inner'>";
                             outputDesktop += "<a href='shop-details.jsp?productId=" + pId + "' class='pic'>";
-                            
+
                             if (typeof images !== 'undefined' && images !== null && images instanceof Array && images.length > 0) {
                                 outputDesktop += "<div class='product-image-fixed-size'>";
                                 outputDesktop += "<img src='" + base + "/" + images[0] + "' alt=''>";
@@ -579,20 +574,24 @@ function loadSearchItem() {
                                 outputDesktop += "</div>";
                             }
 
-                            var translatedprodname = translate(name);
+//                            var translatedprodname = translate(name);
                             var alt = "";
-                            if (translatedprodname.length >= 30) {
-                                alt = translatedprodname.substring(0, 31) + "...";
+//                            if (translatedprodname.length >= 30) {
+                            if (name.length >= 30) {
+//                                alt = translatedprodname.substring(0, 31) + "...";
+                                alt = name.substring(0, 31) + "...";
                             } else {
-                                alt = translatedprodname;
+//                                alt = translatedprodname;
+                                alt = name;
                             }
-                            
+
                             outputDesktop += "<h3 style='height: 40px;'>";
                             outputDesktop += "<a href='shop-details.jsp?productId=" + pId + "'>";
-                            outputDesktop += "<p title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+//                            outputDesktop += "<p title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+                            outputDesktop += "<p title='" + name + "' class='limited-text'>" + alt + "</p>";
                             outputDesktop += "</a>";
                             outputDesktop += "</h3>";
-                            outputDesktop += "<p style='height:35px'>" + category + "</p>";
+                            outputDesktop += "<p style='height:35px; margin-right: -5px;'>" + category + "</p>";
 
                             var price = 0;
                             if (ccode === "SGD") {
@@ -615,8 +614,7 @@ function loadSearchItem() {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var priceWGst = price * gstval;
                                                 price = parseFloat(priceWGst).toFixed(2);
-                                            }
-                                            else {
+                                            } else {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var markup = 1 + (markupPercentage / 100.0);
                                                 shippingCosts = parseFloat(shippingCosts);
@@ -626,8 +624,7 @@ function loadSearchItem() {
                                             }
                                         }
                                     }
-                                }
-                                else {
+                                } else {
                                     brandDiscount = userObject['discounted_brands_value'];
                                     if (brandList.includes(productBrand)) {
                                         for (var j = 0; j < brandList.length; j++) {
@@ -644,8 +641,7 @@ function loadSearchItem() {
                                                     var gstval = 1 + (parseInt(gst)) / 100.0;
                                                     var priceWGst = price * gstval;
                                                     price = parseFloat(priceWGst).toFixed(2);
-                                                }
-                                                else {
+                                                } else {
                                                     var gstval = 1 + (parseInt(gst)) / 100.0;
                                                     var markup = 1 + (markupPercentage / 100.0);
                                                     shippingCosts = parseFloat(shippingCosts);
@@ -657,8 +653,8 @@ function loadSearchItem() {
                                         }
                                     }
                                 }
-                                
-                                
+
+
                                 if (initialPrice > price) {
                                     outputDesktop += "<span style='font-size:10px'>";
                                     outputDesktop += "MRSP: <strike>" + ccode + " " + initialPrice + "</strike>";
@@ -667,8 +663,7 @@ function loadSearchItem() {
                                     outputDesktop += "</br>";
                                     outputDesktop += "<span style='font-size:15px'>Discount: " + (((initialPrice - price) / initialPrice) * 100).toFixed(2) + "%</span>";
                                     outputDesktop += "</div>";
-                                }
-                                else {
+                                } else {
                                     outputDesktop += "<span style='font-size:10px'>";
                                     outputDesktop += "MRSP: <strike>" + ccode + " " + price + "</strike>";
                                     outputDesktop += "</span>";
@@ -697,7 +692,7 @@ function loadSearchItem() {
                         }
                         $("#productGridDesktop").append(outputDesktop);
                         /**** DESKTOP VERSION ****/
-                        
+
                         /**** MOBILE VERSION ****/
                         var position = isLeft ? "half-left" : "half-right";
                         var outputMobile = "<li class='" + position + "'>";
@@ -706,8 +701,7 @@ function loadSearchItem() {
                             var margin = isLeft ? "margin-left: -21px;" : "margin: 0;";
                             outputMobile += "<img style='" + margin + "' src='" + base + "/" + images[0] + "' width='150px' height='150px' alt=''>";
                             outputMobile += "</a>";
-                        }
-                        else {
+                        } else {
 //                            outputMobile += "<div class='product-image-fixed-size'>";
                             var margin = isLeft ? "margin-left: -21px;" : "margin: 0;";
                             outputMobile += "<img style='" + margin + "' src='img/coming_soon.jpg' width='150px' height='150px' alt=''>";
@@ -718,23 +712,23 @@ function loadSearchItem() {
                         outputMobile += "<h3 style='color:#fff'>";
                         outputMobile += "<a href='shop-details.jsp?productId=" + pId + "'>";
                         var margin = isLeft ? "margin-left: -30px;" : "margin-left: -5px;";
-                        outputMobile += "<p style='height: 80px; width: 150px; " + margin + " text-align: center;' title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+//                        outputMobile += "<p style='height: 80px; width: 150px; " + margin + " text-align: center;' title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+                        outputMobile += "<p style='height: 80px; width: 150px; " + margin + " text-align: center;' title='" + name + "' class='limited-text'>" + alt + "</p>";
                         outputMobile += "</a>";
                         outputMobile += "</h3>";
 //                        outputMobile += "<p style='height:30px'>" + category + "</p>";
-                        
+
                         price = 0;
                         if (ccode === "SGD") {
                             price = parseFloat(localprice).toFixed(2);
-                        }
-                        else {
+                        } else {
                             price = parseFloat(foreignprice).toFixed(2);
                         }
-                        
+
                         if (role === dealer) {
                             margin = isLeft ? "margin-left: -25px;" : "";
                             outputMobile += "<div class='price' style='" + margin + " width: 150px; text-align: center;'>";
-                            
+
                             var initialPrice = price;
                             var brandList = userObject['discounted_brands'];
 
@@ -746,8 +740,7 @@ function loadSearchItem() {
                                             var gstval = 1 + (parseInt(gst)) / 100.0;
                                             var priceWGst = price * gstval;
                                             price = parseFloat(priceWGst).toFixed(2);
-                                        }
-                                        else {
+                                        } else {
                                             var gstval = 1 + (parseInt(gst)) / 100.0;
                                             var markup = 1 + (markupPercentage / 100.0);
                                             shippingCosts = parseFloat(shippingCosts);
@@ -757,8 +750,7 @@ function loadSearchItem() {
                                         }
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 brandDiscount = userObject['discounted_brands_value'];
                                 if (brandList.includes(product['productBrand'])) {
                                     for (var j = 0; j < brandList.length; j++) {
@@ -767,8 +759,7 @@ function loadSearchItem() {
                                             break;
                                         }
                                     }
-                                }
-                                else {
+                                } else {
                                     for (var key in products[i]) {
                                         if (key.indexOf("markup") !== -1 && key.indexOf("tier") !== -1 && key.indexOf(tier) !== -1) {
                                             var markupPercentage = parseInt(product[key]);
@@ -776,8 +767,7 @@ function loadSearchItem() {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var priceWGst = price * gstval;
                                                 price = parseFloat(priceWGst).toFixed(2);
-                                            }
-                                            else {
+                                            } else {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var markup = 1 + (markupPercentage / 100.0);
                                                 shippingCosts = parseFloat(shippingCosts);
@@ -789,7 +779,7 @@ function loadSearchItem() {
                                     }
                                 }
                             }
-                            
+
                             if (initialPrice > price) {
                                 outputMobile += "<span style='font-size:10px'>";
                                 outputMobile += "MRSP: <strike>" + ccode + " " + initialPrice + "</strike>";
@@ -798,8 +788,7 @@ function loadSearchItem() {
                                 outputMobile += "</br>";
                                 outputMobile += "<span style='font-size:15px'>Discount: " + (((initialPrice - price) / initialPrice) * 100).toFixed(2) + "%</span>";
                                 outputMobile += "</div>";
-                            }
-                            else {
+                            } else {
                                 outputMobile += "<span style='font-size:10px'>";
                                 outputMobile += "MRSP: <strike>" + ccode + " " + price + "</strike>";
                                 outputMobile += "</span>";
@@ -808,44 +797,55 @@ function loadSearchItem() {
                                 outputMobile += "<span style='font-size:15px'>Discount: " + (((price - price) / price) * 100).toFixed(2) + "%</span>";
                                 outputMobile += "</div>";
                             }
-                        }
-                        else {
+                        } else {
                             margin = isLeft ? "margin-left: -25px;" : "";
                             var gstval = 1 + (parseInt(gst)) / 100.0;
                             var priceWGst = price * gstval;
                             price = parseFloat(priceWGst).toFixed(2);
                             outputMobile += "<div class='price' style='" + margin + " width: 150px; text-align: center;'>" + ccode + " " + price + "</div>";
                         }
-                        
+
                         margin = isLeft ? "margin-left: -25px;" : "margin-left: 0px; margin-right: -15px;";
                         outputMobile += "<div style='" + margin + "' class='actions'>";
-                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + translatedprodname + "\", \"" + pId + "\", " + price + ")'>";
+//                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + translatedprodname + "\", \"" + pId + "\", " + price + ")'>";
+                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + name + "\", \"" + pId + "\", " + price + ")'>";
                         outputMobile += "<i class='fa fa-shopping-cart'></i>";
                         outputMobile += "Add to cart";
                         outputMobile += "</a>";
                         outputMobile += "</div>";
                         outputMobile += "</div>";
-                        
+
                         outputMobile += "</li>";
                         $("#productGridMobile").append(outputMobile);
                         isLeft = !isLeft;
                         /**** MOBILE VERSION ****/
                     }
                     maxPage = data.totalPages;
-                }
-                else {
+                } else {
                     $("#productGridDesktop").append("<span style='color:'#fff> " + data.message + "</span>");
                     $("#productGridMobile").append("<span style='color:'#fff> " + data.message + "</span>");
                 }
-            }
-            else {
+            } else {
                 $("#productGridDesktop").append("<span style='color:'#fff>Error: Please try again</span>");
                 $("#productGridMobile").append("<span style='color:'#fff>Error: Please try again</span>");
             }
+
+            if (maxPage > pageNo) {
+                $("#load").show();
+                $("#wave").hide();
+                scrollTimeout = null;
+            }
+            else {
+                $("#wave").hide();
+                $(".dashes").show();
+            }
             
             $('#productList').loading('stop');
-            
-            hasExecuted = false;
+
+//            setTimeout(() => {
+//                hasExecuted = false;
+//            }, 2000);
+            scrollTimeout = null;
         },
         dataType: 'json'
     });
@@ -862,7 +862,7 @@ function loadItem() {
         success: function (data) {},
         complete: function (e, xhr, settings) {
             var rawData = e.responseText;
-            
+
             if (rawData === "Unauthorized access!") {
                 $.toast({
                     heading: 'Error',
@@ -872,10 +872,10 @@ function loadItem() {
                 });
                 return;
             }
-            
+
             if (e.status === 200) {
                 var data = ($.parseJSON(e.responseText));
-                
+
                 if (data.status) {
                     products = data.products;
 
@@ -888,21 +888,19 @@ function loadItem() {
                         var gst = product.gst;
                         var foreignprice = product.foreignprice;
                         var localprice = product.localprice;
-                        console.log(localprice);
                         var productBrand = product.productBrand;
                         var shippingCosts = product.shippingCosts;
                         var images = product.img;
 
                         if (ccode === "SGD" && (typeof localprice === 'undefined' || localprice === null || localprice === 0)) {
                             continue;
-                        }
-                        else {
+                        } else {
                             /**** DESKTOP VERSION ****/
-    //                                        var rating = (products[i].rating / 5) * 100;
+                            //                      var rating = (products[i].rating / 5) * 100;
                             var outputDesktop = "<li>";
                             outputDesktop += "<div class='inner'>";
                             outputDesktop += "<a href='shop-details.jsp?productId=" + pId + "' class='pic'>";
-                            
+
                             if (typeof images !== 'undefined' && images !== null && images instanceof Array && images.length > 0) {
                                 outputDesktop += "<div class='product-image-fixed-size'>";
                                 outputDesktop += "<img src='" + base + "/" + images[0] + "' alt=''>";
@@ -915,20 +913,24 @@ function loadItem() {
                                 outputDesktop += "</div>";
                             }
 
-                            var translatedprodname = translate(name);
+//                            var translatedprodname = translate(name);
                             var alt = "";
-                            if (translatedprodname.length >= 30) {
-                                alt = translatedprodname.substring(0, 31) + "...";
+//                            if (translatedprodname.length >= 30) {
+                            if (name.length >= 30) {
+//                                alt = translatedprodname.substring(0, 31) + "...";
+                                alt = name.substring(0, 31) + "...";
                             } else {
-                                alt = translatedprodname;
+//                                alt = translatedprodname;
+                                alt = name;
                             }
-                            
+
                             outputDesktop += "<h3 style='height: 40px;'>";
                             outputDesktop += "<a href='shop-details.jsp?productId=" + pId + "'>";
-                            outputDesktop += "<p title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+//                            outputDesktop += "<p title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+                            outputDesktop += "<p title='" + name + "' class='limited-text'>" + alt + "</p>";
                             outputDesktop += "</a>";
                             outputDesktop += "</h3>";
-                            outputDesktop += "<p style='height:35px'>" + category + "</p>";
+                            outputDesktop += "<p style='height:35px; margin-right: -5px;'>" + category + "</p>";
 
                             var price = 0;
                             if (ccode === "SGD") {
@@ -936,10 +938,8 @@ function loadItem() {
                             } else {
                                 price = parseFloat(foreignprice).toFixed(2);
                             }
-                            console.log("price > " + price);
 
                             if (role === dealer) {
-                                console.log("in");
                                 outputDesktop += "<div class='price'>";
 
                                 var initialPrice = price;
@@ -953,8 +953,7 @@ function loadItem() {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var priceWGst = price * gstval;
                                                 price = parseFloat(priceWGst).toFixed(2);
-                                            }
-                                            else {
+                                            } else {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var markup = 1 + (markupPercentage / 100.0);
                                                 shippingCosts = parseFloat(shippingCosts);
@@ -964,8 +963,7 @@ function loadItem() {
                                             }
                                         }
                                     }
-                                }
-                                else {
+                                } else {
                                     brandDiscount = userObject['discounted_brands_value'];
                                     if (brandList.includes(productBrand)) {
                                         for (var j = 0; j < brandList.length; j++) {
@@ -982,8 +980,7 @@ function loadItem() {
                                                     var gstval = 1 + (parseInt(gst)) / 100.0;
                                                     var priceWGst = price * gstval;
                                                     price = parseFloat(priceWGst).toFixed(2);
-                                                }
-                                                else {
+                                                } else {
                                                     var gstval = 1 + (parseInt(gst)) / 100.0;
                                                     var markup = 1 + (markupPercentage / 100.0);
                                                     shippingCosts = parseFloat(shippingCosts);
@@ -995,7 +992,7 @@ function loadItem() {
                                         }
                                     }
                                 }
-                                
+
                                 if (initialPrice > price) {
                                     outputDesktop += "<span style='font-size:10px'>";
                                     outputDesktop += "MRSP: <strike>" + ccode + " " + initialPrice + "</strike>";
@@ -1004,8 +1001,7 @@ function loadItem() {
                                     outputDesktop += "</br>";
                                     outputDesktop += "<span style='font-size:15px'>Discount: " + (((initialPrice - price) / initialPrice) * 100).toFixed(2) + "%</span>";
                                     outputDesktop += "</div>";
-                                }
-                                else {
+                                } else {
                                     outputDesktop += "<span style='font-size:10px'>";
                                     outputDesktop += "MRSP: <strike>" + ccode + " " + price + "</strike>";
                                     outputDesktop += "</span>";
@@ -1014,7 +1010,7 @@ function loadItem() {
                                     outputDesktop += "<span style='font-size:15px'>Discount: " + (((price - price) / price) * 100).toFixed(2) + "%</span>";
                                     outputDesktop += "</div>";
                                 }
-                                    
+
                             } else {
                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                 var priceWGst = price * gstval;
@@ -1035,44 +1031,43 @@ function loadItem() {
                         }
                         $("#productGridDesktop").append(outputDesktop);
                         /**** DESKTOP VERSION ****/
-                        
+
                         /**** MOBILE VERSION ****/
                         var position = isLeft ? "half-left" : "half-right";
                         var outputMobile = "<li class='" + position + "'>";
                         outputMobile += "<a href='shop-details.jsp?productId=" + pId + "' class='pic'>";
                         if (typeof images !== 'undefined' && images !== null && images instanceof Array && images.length > 0) {
-                            var margin = isLeft ? "margin-left: -40px;" : "margin: 0;";
-                            outputMobile += "<img style='" + margin + "' src='" + base + "/" + images[0] + "' width='150px' height='150px' alt=''>";
+                            var margin = isLeft ? "margin-left: -50px;" : "margin-left: -12px;";
+                            outputMobile += "<img style='" + margin + " width: 50%; height: 150px;' src='" + base + "/" + images[0] + "' alt=''>";
                             outputMobile += "</a>";
-                        }
-                        else {
+                        } else {
 //                            outputMobile += "<div class='product-image-fixed-size'>";
-                            var margin = isLeft ? "margin-left: -40px;" : "margin: 0;";
-                            outputMobile += "<img style='" + margin + "' src='img/coming_soon.jpg' width='150px' height='150px' alt=''>";
+                            var margin = isLeft ? "margin-left: -50px;" : "margin-left: -12px;";
+                            outputMobile += "<img style='" + margin + " width: 50%; height: 150px;' src='img/coming_soon.jpg' alt=''>";
                             outputMobile += "</a>";
 //                            outputMobile += "</div>";
                         }
                         outputMobile += "</a>"
                         outputMobile += "<h3 style='color:#fff'>";
                         outputMobile += "<a href='shop-details.jsp?productId=" + pId + "'>";
-                        var margin = isLeft ? "margin-left: -45px;" : "margin-left: -5px;";
-                        outputMobile += "<p style='height: 80px; width: 150px; " + margin + " text-align: center;' title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+                        var margin = isLeft ? "margin-left: -55px;" : "margin-left: -16px;";
+//                        outputMobile += "<p style='height: 80px; width: 150px; " + margin + " text-align: center;' title='" + translatedprodname + "' class='limited-text'>"+ alt + "</p>";
+                        outputMobile += "<p style='height: 80px; width: 150px; " + margin + " text-align: center;' title='" + name + "' class='limited-text'>" + alt + "</p>";
                         outputMobile += "</a>";
                         outputMobile += "</h3>";
 //                        outputMobile += "<p style='height:30px'>" + category + "</p>";
-                        
+
                         price = 0;
                         if (ccode === "SGD") {
                             price = parseFloat(localprice).toFixed(2);
-                        }
-                        else {
+                        } else {
                             price = parseFloat(foreignprice).toFixed(2);
                         }
-                        
+
                         if (role === dealer) {
-                            margin = isLeft ? "margin-left: -45px;" : "";
+                            margin = isLeft ? "margin-left: -55px;" : "margin-left: -12px;";
                             outputMobile += "<div class='price' style='" + margin + " width: 150px; text-align: center;'>";
-                            
+
                             var initialPrice = price;
                             var brandList = userObject['discounted_brands'];
 
@@ -1084,8 +1079,7 @@ function loadItem() {
                                             var gstval = 1 + (parseInt(gst)) / 100.0;
                                             var priceWGst = price * gstval;
                                             price = parseFloat(priceWGst).toFixed(2);
-                                        }
-                                        else {
+                                        } else {
                                             var gstval = 1 + (parseInt(gst)) / 100.0;
                                             var markup = 1 + (markupPercentage / 100.0);
                                             shippingCosts = parseFloat(shippingCosts);
@@ -1095,8 +1089,7 @@ function loadItem() {
                                         }
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 brandDiscount = userObject['discounted_brands_value'];
                                 if (brandList.includes(product['productBrand'])) {
                                     for (var j = 0; j < brandList.length; j++) {
@@ -1105,8 +1098,7 @@ function loadItem() {
                                             break;
                                         }
                                     }
-                                }
-                                else {
+                                } else {
                                     for (var key in products[i]) {
                                         if (key.indexOf("markup") !== -1 && key.indexOf("tier") !== -1 && key.indexOf(tier) !== -1) {
                                             var markupPercentage = parseInt(product[key]);
@@ -1114,8 +1106,7 @@ function loadItem() {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var priceWGst = price * gstval;
                                                 price = parseFloat(priceWGst).toFixed(2);
-                                            }
-                                            else {
+                                            } else {
                                                 var gstval = 1 + (parseInt(gst)) / 100.0;
                                                 var markup = 1 + (markupPercentage / 100.0);
                                                 shippingCosts = parseFloat(shippingCosts);
@@ -1127,7 +1118,7 @@ function loadItem() {
                                     }
                                 }
                             }
-                            
+
                             if (initialPrice > price) {
                                 outputMobile += "<span style='font-size:10px'>";
                                 outputMobile += "MRSP: <strike>" + ccode + " " + initialPrice + "</strike>";
@@ -1136,8 +1127,7 @@ function loadItem() {
                                 outputMobile += "</br>";
                                 outputMobile += "<span style='font-size:15px'>Discount: " + (((initialPrice - price) / initialPrice) * 100).toFixed(2) + "%</span>";
                                 outputMobile += "</div>";
-                            }
-                            else {
+                            } else {
                                 outputMobile += "<span style='font-size:10px'>";
                                 outputMobile += "MRSP: <strike>" + ccode + " " + price + "</strike>";
                                 outputMobile += "</span>";
@@ -1146,46 +1136,57 @@ function loadItem() {
                                 outputMobile += "<span style='font-size:15px'>Discount: " + (((price - price) / price) * 100).toFixed(2) + "%</span>";
                                 outputMobile += "</div>";
                             }
-                            
-                                
-                        }
-                        else {
-                            margin = isLeft ? "margin-left: -45px;" : "";
+
+
+                        } else {
+                            margin = isLeft ? "margin-left: -55px;" : "margin-left: -12px;";
                             var gstval = 1 + (parseInt(gst)) / 100.0;
                             var priceWGst = price * gstval;
                             price = parseFloat(priceWGst).toFixed(2);
                             outputMobile += "<div class='price' style='" + margin + " width: 150px; text-align: center;'>" + ccode + " " + price + "</div>";
                         }
-                        
-                        margin = isLeft ? "margin-left: -45px; margin-right: 5px;" : "margin-left: 0px; margin-right: -32px;";
+
+                        margin = isLeft ? "margin-left: -45px; margin-right: 5px;" : "margin-left: -10px; margin-right: -32px;";
                         outputMobile += "<div style='" + margin + "' class='actions'>";
-                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + translatedprodname + "\", \"" + pId + "\", " + price + ")'>";
+//                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + translatedprodname + "\", \"" + pId + "\", " + price + ")'>";
+                        outputMobile += "<a id='" + pId + "Btn' onclick='selectQtyMobile(\"" + name + "\", \"" + pId + "\", " + price + ")'>";
                         outputMobile += "<i class='fa fa-shopping-cart'></i>";
                         outputMobile += "Add to cart";
                         outputMobile += "</a>";
                         outputMobile += "</div>";
                         outputMobile += "</div>";
-                        
+
                         outputMobile += "</li>";
                         $("#productGridMobile").append(outputMobile);
                         isLeft = !isLeft;
                         /**** MOBILE VERSION ****/
                     }
                     maxPage = data.totalPages;
-                }
-                else {
+                } else {
                     $("#productGridDesktop").append("<span style='color:'#fff> " + data.message + "</span>");
                     $("#productGridMobile").append("<span style='color:'#fff> " + data.message + "</span>");
                 }
-            }
-            else {
+            } else {
                 $("#productGridDesktop").append("<span style='color:'#fff>Error: Please try again</span>");
                 $("#productGridMobile").append("<span style='color:'#fff>Error: Please try again</span>");
             }
             
+            if (maxPage > pageNo) {
+                $("#load").show();
+                $("#wave").hide();
+                scrollTimeout = null;
+            }
+            else {
+                $("#wave").hide();
+                $(".dashes").show();
+            }
+            
             $('#productList').loading('stop');
             
-            hasExecuted = false;
+//            setTimeout(() => {
+//                hasExecuted = false;
+//            }, 2000);
+//            scrollTimeout = null;
         },
         dataType: 'json'
     });
@@ -1221,8 +1222,7 @@ function addToCartMobile(qty, pid, price) {
                         showHideTransition: 'slide',
                         icon: 'success'
                     });
-                }
-                else {
+                } else {
                     $.toast({
                         heading: 'Error',
                         text: 'Please login to add to cart',
@@ -1270,8 +1270,7 @@ function addToCart(pid, price) {
                 }
             }
         });
-    }
-    else {
+    } else {
         $.toast({
             heading: 'Error',
             text: 'Please indicate your quantity in the box',
@@ -1291,4 +1290,23 @@ function increaseQty(itemId) {
     var qty = parseInt($("#" + itemId + "Qty").val());
     var newQty = qty + 1;
     $("#" + itemId + "Qty").val(newQty);
+}
+
+
+function isInViewport (elem) {
+    var elementTop = elem.offset().top;
+    var elementBottom = elementTop + elem.outerHeight();
+    var viewportTop = $(window).scrollTop();
+    var viewportBottom = viewportTop + $(window).height();
+    return elementBottom > viewportTop && elementTop < viewportBottom;
+}
+
+function isScrolledIntoView(elem) {
+    var docViewTop = $(window).scrollTop();
+    var docViewBottom = docViewTop + $(window).height();
+
+    var elemTop = $(elem).offset().top;
+    var elemBottom = elemTop + $(elem).height();
+
+    return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
 }

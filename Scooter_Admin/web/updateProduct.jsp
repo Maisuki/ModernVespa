@@ -78,7 +78,8 @@
                                         <div class="row">
                                             <div class="form-group col-sm-6 col-xs-12">
                                                 <label for="pBrand">Product Brand</label>
-                                                <select class="form-control select2" id="pBrand" name="pBrand" style="width: 100%;" required>
+                                                <select class="form-control select2" id="pBrand" name="pBrand" style="width: 100%;">
+                                                    <option value="">Please select Product Brand</option>
                                                     <option value="addnew" style="font-weight:bold;">New Product Brand?</option>
                                                     <%@include file="productBrand.jsp" %> 
                                                 </select>

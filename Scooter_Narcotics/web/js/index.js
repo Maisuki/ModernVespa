@@ -1,11 +1,7 @@
 var isLeft = true;
-$(document).ready(function() {   
+$(document).ready(function() {    
     $("#loader").fadeOut(1500, function () {
         $("#myDiv").fadeIn(1000);
-    });
-    
-    $(document).on('opening', '.remodal', function () {
-        
     });
 
     $(document).on('confirmation', '.remodal', function () {

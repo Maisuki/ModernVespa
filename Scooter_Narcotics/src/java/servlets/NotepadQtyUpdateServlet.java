@@ -1,6 +1,7 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import common.Global;
@@ -69,8 +70,8 @@ public class NotepadQtyUpdateServlet extends HttpServlet {
         String POST_PARAMS = "clientId=" + clientId + "&npId=" + notepadId + "&action=" + action + "&qty=" + qty + "&item=" + item + "&price=" + price;
         POST_PARAMS = POST_PARAMS.replaceAll(" ", "%20");
         
-        String results = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        JsonObject obj = new JsonParser().parse(results).getAsJsonObject();
+        JsonElement results = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        JsonObject obj = results.getAsJsonObject();
         
         response.getWriter().println(new Gson().toJson(obj));
     }

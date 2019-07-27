@@ -45,9 +45,9 @@ public class RetrieveProductServlet extends HttpServlet {
         String POST_PARAMS = "pId=" + productId;
         
         String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
-        result = result.replaceAll("´", "%C2%B4");
-        result = result.replaceAll("²", "%C2%B2");
-        result = result.replaceAll("³", "%C2%B3");
+//        result = result.replaceAll("´", "%C2%B4");
+//        result = result.replaceAll("²", "%C2%B2");
+//        result = result.replaceAll("³", "%C2%B3");
         JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
         
         response.getWriter().println(new Gson().toJson(obj));

@@ -1,7 +1,3 @@
-async function main() {
-    await sn.retrieveRates();
-}
-
 $(document).ready(function () {
     $('.content-wrapper').loading({
         stoppable: true,
@@ -162,8 +158,6 @@ $(document).ready(function () {
             }
         }
     });
-    
-    main();
     
     $('input:text').focus(function () {
         $(this).select();

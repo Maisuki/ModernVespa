@@ -7,7 +7,6 @@ import common.Global;
 import controller.RefererCheckManager;
 import controller.SNServer;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,9 +33,23 @@ public class UpdateCatServlet extends HttpServlet {
         
         String catId = request.getParameter("catId");
         String catName = request.getParameter("catName");
+        
+        if (catName == null || catName.trim().isEmpty() ||
+                catId == null || catId.trim().isEmpty()) {
+            JsonObject error = new JsonObject();
+            error.addProperty("status", false);
+            error.addProperty("message", "Category Name and ID are required!");
+            response.getWriter().println(new Gson().toJson(error));
+            return;
+        }
+        
+        catName = catName.trim();
+        catName = catName.replaceAll("&", "%26");
+        
         String POST_URL = Global.BASE_URL + "/updateCat";
         String POST_PARAMS = "catId=" + catId + "&catName=" + catName;
         String result = SNServer.sendPOST(POST_URL, POST_PARAMS);
+        
         JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
         response.getWriter().println(new Gson().toJson(obj));
     }
