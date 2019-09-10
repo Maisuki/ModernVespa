@@ -208,6 +208,21 @@ module.exports = {
 		}
 	},
 
+	retrieveLatestProducts: async function() {
+		var db = dbConnection.getDb();
+		var products = db.collection('products');
+		try {
+			const retrieveLatestProductsResults = await products.find().sort({_id:-1}).toArray();
+			if (retrieveLatestProductsResults.length === 0) {
+				throw new Error('1');
+			}
+			return retrieveLatestProductsResults;
+		}
+		catch (err) {
+			throw new Error('Something went wrong! Please contact the administrator!');
+		}
+	},
+
 	retrieveAllProductsUser: async function(filter) {
 		var db = dbConnection.getDb();
 		var products = db.collection('products');

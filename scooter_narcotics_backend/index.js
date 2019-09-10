@@ -606,6 +606,63 @@ app.get('/featured', async function(req, res) {
 	}
 });
 
+app.get('/latestproducts', async function(req, res) {
+	var page = req.query.page;
+	var skip = 0;
+	var currentPage = 1;
+	try {
+		if (page !== undefined && page.trim().length !== 0) {
+			if (isNaN(page)) {
+				throw new Error('Page must be a number!');
+			}
+			currentPage = parseInt(page);
+			skip = (parseInt(page) - 1) * 9;
+		}
+		const allFeaturedProducts = await productController.retrieveLatestProducts();
+		var totalPages = Math.ceil(allFeaturedProducts.length / 9);
+		if (page > totalPages) {
+			throw new Error('Only ' + totalPages + ' pages are available to query!');
+		}
+		
+		const featuredProducts = await productControllerretrieveLatestProducts();
+		var currency = req.query.currency;
+		if (currency === undefined || currency.trim() === undefined || currency.trim().toLowerCase() === 'sgd') {
+			res.json({ status: true, products: featuredProducts, totalPages: totalPages, currentPage: currentPage });
+			return;
+		}
+		if (currency.trim().toLowerCase() === 'vnd' || currency.trim().toLowerCase() === 'twd') {
+			currency = 'usd';
+		}
+		
+		var results = exchangeRatesData.result;
+		var record = results.records[0];
+		var keys = Object.keys(record);
+		var fieldName = '';
+		var requiresDivision = false;
+		for (var idx in keys) {
+			if (keys[idx].includes(currency.trim().toLowerCase())) {
+				fieldName = keys[idx];
+				if (fieldName.includes("100")) {
+				  requiresDivision = true;
+				}
+				break;
+			}
+		}
+		var rate = requiresDivision ? (parseFloat(record[fieldName]) / 100.0) : record[fieldName];
+		for (var idx in featuredProducts) {
+		  var item = featuredProducts[idx];
+		  var price = parseFloat(item['foreignprice']);
+		  price = price / rate;
+		  item['foreignprice'] = price.toFixed(2) + '';
+		}
+		res.json({ status: true, products: featuredProducts, totalPages: totalPages, currentPage: currentPage });
+	}
+	catch (err) {
+		res.json({ status: false, message: err.message });
+	}
+});
+
+
 app.get('/productDetails', async function(req, res) {
 	var query = req.query.query;
 	if (query === undefined || query.trim().length === 0) {

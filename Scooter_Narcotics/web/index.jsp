@@ -47,12 +47,20 @@
                                     <ul id="productGridDesktop"></ul>
                                     <br>
                                 </div>
+                                <div style="margin-top: 0px" class="block block-catalog-grid">
+                                    <h2>Latest Products</h2>
+                                    <ul id="top10productGridDesktop"></ul>
+                                    <br>
+                                </div>
                                 <!--/ catalog grid -->
                             </div>
                         </div>
                         <div class="mobileDisplayOption featured-product grid-row">
                             <div class="grid-col grid-col-12">
                                 <div id="productGridMobile" class="block block-catalog-grid"></div>
+                            </div>
+                            <div class="grid-col grid-col-12">
+                                <div id="Top10productGridMobile" class="block block-catalog-grid"></div>
                             </div>
                         </div>
                     </div>

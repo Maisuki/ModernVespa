@@ -10,3 +10,4 @@
 *.war
 *.class
 *.class
+/scooter_narcotics_backend/nbproject/private/
