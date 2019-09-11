@@ -219,7 +219,12 @@ module.exports = {
 			return retrieveLatestProductsResults;
 		}
 		catch (err) {
-			throw new Error('Something went wrong! Please contact the administrator!');
+			if (err.message == '1') {
+				throw new Error('No products found! Please contact the administrator!');
+			}
+			else {
+				throw new Error('Something went wrong! Please contact the administrator!');
+			}
 		}
 	},
 

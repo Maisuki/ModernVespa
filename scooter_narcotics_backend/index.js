@@ -13,13 +13,16 @@ var base64ToImage = require('base64-to-image');
 var pkey = fs.readFileSync('/etc/cloudflare/private-key/private-key.pem');
 var pcert = fs.readFileSync('/etc/cloudflare/origin-cert/origin-cert.pem');
 var pca = fs.readFileSync('/etc/cloudflare/ca/ca.pem');
+//var pkey = fs.readFileSync('./official_certs/private-key/private-key.pem');
+//var pcert = fs.readFileSync('./official_certs/origin-cert/origin-cert.pem');
+//var pca = fs.readFileSync('./official_certs/ca/ca.pem');
 var options = {
 	key: pkey,
 	cert: pcert,
 	ca: pca
 };
-
 var bcrypt = require('bcrypt');
+//var bcrypt = require('bcrypt-pbkdf');
 const saltRounds = 10;
 var bodyParser = require('body-parser');
 
@@ -624,7 +627,7 @@ app.get('/latestproducts', async function(req, res) {
 			throw new Error('Only ' + totalPages + ' pages are available to query!');
 		}
 		
-		const featuredProducts = await productControllerretrieveLatestProducts();
+		const featuredProducts = await productController.retrieveLatestProducts();
 		var currency = req.query.currency;
 		if (currency === undefined || currency.trim() === undefined || currency.trim().toLowerCase() === 'sgd') {
 			res.json({ status: true, products: featuredProducts, totalPages: totalPages, currentPage: currentPage });
