@@ -48,7 +48,7 @@
                                     <br>
                                 </div>
                                 <div style="margin-top: 0px" class="block block-catalog-grid">
-                                    <h2>Latest Products</h2>
+                                    <h2>Newly Added Products</h2>
                                     <ul id="top10productGridDesktop"></ul>
                                     <br>
                                 </div>
