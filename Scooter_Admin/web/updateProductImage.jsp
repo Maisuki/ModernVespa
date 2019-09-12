@@ -32,8 +32,8 @@
                                         <br>
                                         <div class="form-group col-sm-6 col-xs-12">
                                             <label for="fileUploader">Product Image</label>
-                                            <input type="file" name="file" multiple>
-                                            <p class="help-block">product.jpg</p>
+                                            <input type="file" name="file" accept=".jpg, .jpeg, .png" multiple>
+                                            <p class="help-block">Only <strong>jpg</strong>, <strong>jpeg</strong>, <strong>png</strong> file formats are accepted</p>
                                             <div class="col-xs-12">
                                                 <div class="box">
                                                     <!-- /.box-header -->

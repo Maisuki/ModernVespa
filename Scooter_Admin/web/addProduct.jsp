@@ -288,7 +288,8 @@
                                     <div class="box-body">
                                         <div class="form-group col-sm-6 col-xs-12">
                                             <label for="fileUploader">Product Image</label>
-                                            <input type="file" name="file" id="fileUploader" multiple>
+                                            <input type="file" name="file" id="fileUploader" accept=".jpg, .jpeg, .png" multiple>
+                                            <p class="help-block">Only <strong>jpg</strong>, <strong>jpeg</strong>, <strong>png</strong> file formats are accepted</p>
                                             <p class="help-block">Please ensure that all images are within the same folder.</p>
                                         </div>
                                         <div class="form-group  col-xs-12">
